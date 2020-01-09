@@ -24,9 +24,14 @@ namespace JRMigrator.beans
             this.password = password;
         }
 
-        public String getConnectionString()
+        public String getCubridConnectionString()
         {
-            return String.Format("server={0};database={1};port={2};user={3};password={4};Connection Timeout=3", ip, databasename, port, username, password);
+            return String.Format("server={0};database={1};port={2};user={3};password={4}", ip, databasename, port, username, password);
+        }
+
+        public String getMSConnectionString()
+        {
+            return String.Format("Data Source = {0}, {2}; Initial Catalog = {1}; User ID = {3}; Password = {4}; Connection Timeout=3", ip, databasename, port, username, password);
         }
     }
 }

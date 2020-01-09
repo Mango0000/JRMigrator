@@ -25,7 +25,7 @@ namespace JRMigrator.DB
         {
             if (connectionString != null)
             {
-                conn = new SqlConnection(connectionString.getConnectionString());
+                conn = new SqlConnection(connectionString.getMSConnectionString());
                 conn.Open();
                 return true;
             }
