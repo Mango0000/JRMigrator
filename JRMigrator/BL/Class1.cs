@@ -11,13 +11,8 @@ namespace JRMigrator.BL
     class Class1
     {
         private static DBStringBuilder dbfrom;
-        public static void start(String ip,String port,String username,String password)
+        public static void start(String ip,String port,String databasename,String username,String password)
         {
-            String ip1 = ip;
-            String port1 = port;
-            String databasename = "testdb";
-            String username1 = username;
-            String password1 = password;
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
             CubridSQLConnection csql = CubridSQLConnection.getCubridConnection();
@@ -40,9 +35,10 @@ namespace JRMigrator.BL
                 }
                 else
                 {
-                    MessageBox.Show("Invalid Port or Adress");
+                    MessageBox.Show("Invalid Port or Address");
                 }
             }
+            csql.CloseConnection();
         }
     }
 }

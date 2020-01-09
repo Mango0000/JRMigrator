@@ -27,5 +27,33 @@ namespace JRMigrator
         {
             call();
         }
+
+
+        private void cb1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cb1.Checked)
+            {
+                tbPw1.PasswordChar = '*';
+               // MessageBox.Show("help");
+            }
+            else
+            {
+                tbPw1.PasswordChar = '\0';
+              
+            }
+        }
+
+        private void cb2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cb2.Checked)
+            {
+                tbPw2.PasswordChar = '*';
+            }
+            else
+            {
+                tbPw2.PasswordChar = '\0';
+              
+            }
+        }
     }
 }
