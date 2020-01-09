@@ -12,7 +12,7 @@ namespace JRMigrator.DB
         public DBStringBuilder connectionString { get; set; } = null;
         private CUBRIDConnection conn = null;
 
-        public static CubridSQLConnection getCubridConnection()
+        public static CubridSQLConnection getConnection()
         {
             if (theInstance == null)
             {
