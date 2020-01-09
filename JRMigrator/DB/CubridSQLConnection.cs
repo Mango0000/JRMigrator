@@ -1,10 +1,8 @@
-﻿using CUBRID.Data.CUBRIDClient;
+﻿extern alias CUBRID;
+using CUBRID::CUBRID.Data.CUBRIDClient;
 using JRMigrator.beans;
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
-using System.Text;
 
 namespace JRMigrator.DB
 {
@@ -27,8 +25,8 @@ namespace JRMigrator.DB
         {
             if (connectionString != null)
             {
-                conn = new CUBRIDConnection(connectionString.getConnectionString());
-                //conn.SetConnectionTimeout(2);
+                conn = new CUBRIDConnection(connectionString.getCubridConnectionString());
+                conn.SetConnectionTimeout(2);
                 conn.Open();
                 return true;
             }
