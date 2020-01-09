@@ -6,6 +6,6 @@ namespace JRMigrator.DB
 {
     class OracleSQLConnection
     {
-        
+        //FUvk
     }
 }
