@@ -12,18 +12,13 @@ namespace JRMigrator.DB
     {
         private static CubridSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
-        private CUBRIDConnection conn;
-
-        public CubridSQLConnection(int timeout)
-        {
-            conn.SetConnectionTimeout(timeout);
-        }
+        private CUBRIDConnection conn = null;
 
         public static CubridSQLConnection getCubridConnection()
         {
             if (theInstance == null)
             {
-                theInstance = new CubridSQLConnection(2);
+                theInstance = new CubridSQLConnection();
             }
             return theInstance;
         }
@@ -33,8 +28,9 @@ namespace JRMigrator.DB
             if (connectionString != null)
             {
                 conn = new CUBRIDConnection(connectionString.getConnectionString());
-                    conn.Open();
-                    return true;
+                conn.SetConnectionTimeout(2);
+                conn.Open();
+                return true;
             }
             return false;
         }
