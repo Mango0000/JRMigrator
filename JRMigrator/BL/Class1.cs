@@ -24,6 +24,7 @@ namespace JRMigrator.BL
 
             Console.Out.WriteLine(dbfrom.ToString());
             Console.Out.WriteLine(csql.OpenConnection()?"erfolgreich":"gescheitert");
+            csql.CloseConnection();
         }
     }
 }

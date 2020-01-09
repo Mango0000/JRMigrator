@@ -32,11 +32,9 @@ namespace JRMigrator.DB
         {
             if (connectionString != null)
             {
-                using (conn = new CUBRIDConnection(connectionString.getConnectionString()))
-                {
+                conn = new CUBRIDConnection(connectionString.getConnectionString());
                     conn.Open();
                     return true;
-                }
             }
             return false;
         }
