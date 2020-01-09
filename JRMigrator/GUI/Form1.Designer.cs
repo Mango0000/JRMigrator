@@ -38,6 +38,8 @@ namespace JRMigrator
         {
             this.gbDB1 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lb1 = new System.Windows.Forms.Label();
+            this.tbdatabasename1 = new System.Windows.Forms.TextBox();
             this.cb1 = new System.Windows.Forms.CheckBox();
             this.bt1 = new System.Windows.Forms.Button();
             this.tbPort1 = new System.Windows.Forms.TextBox();
@@ -52,6 +54,8 @@ namespace JRMigrator
             this.lbDB1 = new System.Windows.Forms.Label();
             this.gbDB2 = new System.Windows.Forms.GroupBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbdatabasename2 = new System.Windows.Forms.TextBox();
             this.cb2 = new System.Windows.Forms.CheckBox();
             this.bt2 = new System.Windows.Forms.Button();
             this.tbPort2 = new System.Windows.Forms.TextBox();
@@ -85,6 +89,8 @@ namespace JRMigrator
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lb1);
+            this.panel1.Controls.Add(this.tbdatabasename1);
             this.panel1.Controls.Add(this.cb1);
             this.panel1.Controls.Add(this.bt1);
             this.panel1.Controls.Add(this.tbPort1);
@@ -102,6 +108,21 @@ namespace JRMigrator
             this.panel1.Size = new System.Drawing.Size(457, 194);
             this.panel1.TabIndex = 4;
             // 
+            // lb1
+            // 
+            this.lb1.Location = new System.Drawing.Point(241, 65);
+            this.lb1.Name = "lb1";
+            this.lb1.Size = new System.Drawing.Size(103, 27);
+            this.lb1.TabIndex = 13;
+            this.lb1.Text = "Datenbankname";
+            // 
+            // tbdatabasename1
+            // 
+            this.tbdatabasename1.Location = new System.Drawing.Point(351, 62);
+            this.tbdatabasename1.Name = "tbdatabasename1";
+            this.tbdatabasename1.Size = new System.Drawing.Size(74, 23);
+            this.tbdatabasename1.TabIndex = 12;
+            // 
             // cb1
             // 
             this.cb1.Location = new System.Drawing.Point(313, 166);
@@ -110,10 +131,11 @@ namespace JRMigrator
             this.cb1.TabIndex = 11;
             this.cb1.Text = "Passwort anzeigen";
             this.cb1.UseVisualStyleBackColor = true;
+            this.cb1.CheckedChanged += new System.EventHandler(this.cb1_CheckedChanged);
             // 
             // bt1
             // 
-            this.bt1.Location = new System.Drawing.Point(310, 51);
+            this.bt1.Location = new System.Drawing.Point(313, 113);
             this.bt1.Name = "bt1";
             this.bt1.Size = new System.Drawing.Size(126, 23);
             this.bt1.TabIndex = 10;
@@ -141,14 +163,14 @@ namespace JRMigrator
             // cbDB1
             // 
             this.cbDB1.FormattingEnabled = true;
-            this.cbDB1.Location = new System.Drawing.Point(121, 13);
+            this.cbDB1.Location = new System.Drawing.Point(100, 13);
             this.cbDB1.Name = "cbDB1";
             this.cbDB1.Size = new System.Drawing.Size(112, 23);
             this.cbDB1.TabIndex = 7;
             // 
             // tbUser1
             // 
-            this.tbUser1.Location = new System.Drawing.Point(121, 114);
+            this.tbUser1.Location = new System.Drawing.Point(100, 114);
             this.tbUser1.Name = "tbUser1";
             this.tbUser1.Size = new System.Drawing.Size(115, 23);
             this.tbUser1.TabIndex = 6;
@@ -156,7 +178,7 @@ namespace JRMigrator
             // 
             // tbAdr1
             // 
-            this.tbAdr1.Location = new System.Drawing.Point(121, 62);
+            this.tbAdr1.Location = new System.Drawing.Point(100, 62);
             this.tbAdr1.Name = "tbAdr1";
             this.tbAdr1.Size = new System.Drawing.Size(115, 23);
             this.tbAdr1.TabIndex = 5;
@@ -164,7 +186,7 @@ namespace JRMigrator
             // 
             // tbPw1
             // 
-            this.tbPw1.Location = new System.Drawing.Point(121, 166);
+            this.tbPw1.Location = new System.Drawing.Point(100, 165);
             this.tbPw1.Name = "tbPw1";
             this.tbPw1.Size = new System.Drawing.Size(115, 23);
             this.tbPw1.TabIndex = 4;
@@ -214,6 +236,8 @@ namespace JRMigrator
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.tbdatabasename2);
             this.panel2.Controls.Add(this.cb2);
             this.panel2.Controls.Add(this.bt2);
             this.panel2.Controls.Add(this.tbPort2);
@@ -231,6 +255,21 @@ namespace JRMigrator
             this.panel2.Size = new System.Drawing.Size(457, 211);
             this.panel2.TabIndex = 4;
             // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(241, 65);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(97, 29);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Datenbankname";
+            // 
+            // tbdatabasename2
+            // 
+            this.tbdatabasename2.Location = new System.Drawing.Point(351, 62);
+            this.tbdatabasename2.Name = "tbdatabasename2";
+            this.tbdatabasename2.Size = new System.Drawing.Size(77, 23);
+            this.tbdatabasename2.TabIndex = 13;
+            // 
             // cb2
             // 
             this.cb2.Location = new System.Drawing.Point(310, 165);
@@ -239,10 +278,11 @@ namespace JRMigrator
             this.cb2.TabIndex = 12;
             this.cb2.Text = "Passwort anzeigen";
             this.cb2.UseVisualStyleBackColor = true;
+            this.cb2.CheckedChanged += new System.EventHandler(this.cb2_CheckedChanged);
             // 
             // bt2
             // 
-            this.bt2.Location = new System.Drawing.Point(310, 51);
+            this.bt2.Location = new System.Drawing.Point(310, 114);
             this.bt2.Name = "bt2";
             this.bt2.Size = new System.Drawing.Size(126, 23);
             this.bt2.TabIndex = 11;
@@ -268,28 +308,28 @@ namespace JRMigrator
             // cbDB2
             // 
             this.cbDB2.FormattingEnabled = true;
-            this.cbDB2.Location = new System.Drawing.Point(121, 13);
+            this.cbDB2.Location = new System.Drawing.Point(100, 14);
             this.cbDB2.Name = "cbDB2";
             this.cbDB2.Size = new System.Drawing.Size(112, 23);
             this.cbDB2.TabIndex = 7;
             // 
             // tbUser2
             // 
-            this.tbUser2.Location = new System.Drawing.Point(121, 114);
+            this.tbUser2.Location = new System.Drawing.Point(100, 115);
             this.tbUser2.Name = "tbUser2";
             this.tbUser2.Size = new System.Drawing.Size(115, 23);
             this.tbUser2.TabIndex = 6;
             // 
             // tbAdr2
             // 
-            this.tbAdr2.Location = new System.Drawing.Point(121, 62);
+            this.tbAdr2.Location = new System.Drawing.Point(100, 65);
             this.tbAdr2.Name = "tbAdr2";
             this.tbAdr2.Size = new System.Drawing.Size(115, 23);
             this.tbAdr2.TabIndex = 5;
             // 
             // tbPw2
             // 
-            this.tbPw2.Location = new System.Drawing.Point(121, 166);
+            this.tbPw2.Location = new System.Drawing.Point(100, 165);
             this.tbPw2.Name = "tbPw2";
             this.tbPw2.Size = new System.Drawing.Size(115, 23);
             this.tbPw2.TabIndex = 4;
@@ -404,18 +444,36 @@ namespace JRMigrator
             cbDB2.Items.Add(DBType.CubridDB+"");
             cbDB2.Items.Add(DBType.OracleSQL+"");
             cbDB2.Items.Add(DBType.MSSQL+"");
+            if (!cb1.Checked)
+            {
+                tbPw1.PasswordChar = '*';
+                //MessageBox.Show("help");
+            }
+            if (!cb2.Checked)
+            {
+                tbPw2.PasswordChar = '*';
+            }
             cbDB1.SelectedIndex = cbDB1.FindStringExact(DBType.CubridDB + "");
             cbDB2.SelectedIndex = cbDB2.FindStringExact(DBType.OracleSQL + "");
         }
 
         public void call()
         {
-           Class1.start(tbAdr1.Text,tbPort1.Text,tbUser1.Text,tbPw1.Text);
-           //Class1.start();
+            String compare = cbDB1.GetItemText(cbDB1.SelectedItem); 
+            if (compare.Equals(DBType.CubridDB+""))
+            {
+                Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text);
+            }
+
+            //Class1.start();
         }
 
         private System.Windows.Forms.TextBox tbPort1;
         private System.Windows.Forms.TextBox tbPort2;
+        private System.Windows.Forms.TextBox tbdatabasename1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tbdatabasename2;
+        private System.Windows.Forms.Label lb1;
     }
     
     

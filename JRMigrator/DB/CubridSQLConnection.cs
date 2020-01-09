@@ -28,7 +28,7 @@ namespace JRMigrator.DB
             if (connectionString != null)
             {
                 conn = new CUBRIDConnection(connectionString.getConnectionString());
-                conn.SetConnectionTimeout(2);
+                //conn.SetConnectionTimeout(2);
                 conn.Open();
                 return true;
             }
