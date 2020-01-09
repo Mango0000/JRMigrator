@@ -20,7 +20,7 @@ namespace JRMigrator.BL
             String password1 = password;
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
-            CubridSQLConnection csql = CubridSQLConnection.getCubridConnection();
+            OracleSQLConnection csql = OracleSQLConnection.getCubridConnection();
             csql.connectionString = dbfrom;
 
             Console.Out.WriteLine(dbfrom.ToString());
