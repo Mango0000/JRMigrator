@@ -26,7 +26,6 @@ namespace JRMigrator.DB
             if (connectionString != null)
             {
                 conn = new OracleConnection(connectionString.getOracleConnectionString());
-                conn.tim
                 conn.Open();
                 return true;
             }
