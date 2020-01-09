@@ -16,7 +16,7 @@ namespace JRMigrator.DB
 
         public CubridSQLConnection(int timeout)
         {
-            conn.SetConnectionTimeout(timeout);
+          conn.SetConnectionTimeout(timeout);
         }
 
         public static CubridSQLConnection getCubridConnection()

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using JRMigrator.beans;
+using JRMigrator.BL;
 
 namespace JRMigrator
 {
@@ -36,8 +38,9 @@ namespace JRMigrator
         {
             this.gbDB1 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cb1 = new System.Windows.Forms.CheckBox();
             this.bt1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbPort1 = new System.Windows.Forms.TextBox();
             this.lbPort1 = new System.Windows.Forms.Label();
             this.cbDB1 = new System.Windows.Forms.ComboBox();
             this.tbUser1 = new System.Windows.Forms.TextBox();
@@ -49,7 +52,9 @@ namespace JRMigrator
             this.lbDB1 = new System.Windows.Forms.Label();
             this.gbDB2 = new System.Windows.Forms.GroupBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.cb2 = new System.Windows.Forms.CheckBox();
+            this.bt2 = new System.Windows.Forms.Button();
+            this.tbPort2 = new System.Windows.Forms.TextBox();
             this.lbPort2 = new System.Windows.Forms.Label();
             this.cbDB2 = new System.Windows.Forms.ComboBox();
             this.tbUser2 = new System.Windows.Forms.TextBox();
@@ -61,9 +66,6 @@ namespace JRMigrator
             this.lbDB2 = new System.Windows.Forms.Label();
             this.gbSum = new System.Windows.Forms.GroupBox();
             this.taSummary = new System.Windows.Forms.TextBox();
-            this.bt2 = new System.Windows.Forms.Button();
-            this.cb1 = new System.Windows.Forms.CheckBox();
-            this.cb2 = new System.Windows.Forms.CheckBox();
             this.gbDB1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gbDB2.SuspendLayout();
@@ -85,7 +87,7 @@ namespace JRMigrator
             // 
             this.panel1.Controls.Add(this.cb1);
             this.panel1.Controls.Add(this.bt1);
-            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.tbPort1);
             this.panel1.Controls.Add(this.lbPort1);
             this.panel1.Controls.Add(this.cbDB1);
             this.panel1.Controls.Add(this.tbUser1);
@@ -100,6 +102,15 @@ namespace JRMigrator
             this.panel1.Size = new System.Drawing.Size(457, 194);
             this.panel1.TabIndex = 4;
             // 
+            // cb1
+            // 
+            this.cb1.Location = new System.Drawing.Point(313, 166);
+            this.cb1.Name = "cb1";
+            this.cb1.Size = new System.Drawing.Size(143, 23);
+            this.cb1.TabIndex = 11;
+            this.cb1.Text = "Passwort anzeigen";
+            this.cb1.UseVisualStyleBackColor = true;
+            // 
             // bt1
             // 
             this.bt1.Location = new System.Drawing.Point(310, 51);
@@ -108,13 +119,15 @@ namespace JRMigrator
             this.bt1.TabIndex = 10;
             this.bt1.Text = "Verbindung testen";
             this.bt1.UseVisualStyleBackColor = true;
+            this.bt1.Click += new System.EventHandler(this.bt1_Click);
             // 
-            // textBox1
+            // tbPort1
             // 
-            this.textBox1.Location = new System.Drawing.Point(351, 13);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(56, 23);
-            this.textBox1.TabIndex = 9;
+            this.tbPort1.Location = new System.Drawing.Point(351, 13);
+            this.tbPort1.Name = "tbPort1";
+            this.tbPort1.Size = new System.Drawing.Size(56, 23);
+            this.tbPort1.TabIndex = 9;
+            this.tbPort1.Text = "33000";
             // 
             // lbPort1
             // 
@@ -139,6 +152,7 @@ namespace JRMigrator
             this.tbUser1.Name = "tbUser1";
             this.tbUser1.Size = new System.Drawing.Size(115, 23);
             this.tbUser1.TabIndex = 6;
+            this.tbUser1.Text = "dba";
             // 
             // tbAdr1
             // 
@@ -146,6 +160,7 @@ namespace JRMigrator
             this.tbAdr1.Name = "tbAdr1";
             this.tbAdr1.Size = new System.Drawing.Size(115, 23);
             this.tbAdr1.TabIndex = 5;
+            this.tbAdr1.Text = "10.151.84.243";
             // 
             // tbPw1
             // 
@@ -153,6 +168,7 @@ namespace JRMigrator
             this.tbPw1.Name = "tbPw1";
             this.tbPw1.Size = new System.Drawing.Size(115, 23);
             this.tbPw1.TabIndex = 4;
+            this.tbPw1.Text = "123456";
             // 
             // lbPw1
             // 
@@ -200,7 +216,7 @@ namespace JRMigrator
             // 
             this.panel2.Controls.Add(this.cb2);
             this.panel2.Controls.Add(this.bt2);
-            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.tbPort2);
             this.panel2.Controls.Add(this.lbPort2);
             this.panel2.Controls.Add(this.cbDB2);
             this.panel2.Controls.Add(this.tbUser2);
@@ -215,12 +231,30 @@ namespace JRMigrator
             this.panel2.Size = new System.Drawing.Size(457, 211);
             this.panel2.TabIndex = 4;
             // 
-            // textBox2
+            // cb2
             // 
-            this.textBox2.Location = new System.Drawing.Point(351, 13);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(53, 23);
-            this.textBox2.TabIndex = 9;
+            this.cb2.Location = new System.Drawing.Point(310, 165);
+            this.cb2.Name = "cb2";
+            this.cb2.Size = new System.Drawing.Size(126, 23);
+            this.cb2.TabIndex = 12;
+            this.cb2.Text = "Passwort anzeigen";
+            this.cb2.UseVisualStyleBackColor = true;
+            // 
+            // bt2
+            // 
+            this.bt2.Location = new System.Drawing.Point(310, 51);
+            this.bt2.Name = "bt2";
+            this.bt2.Size = new System.Drawing.Size(126, 23);
+            this.bt2.TabIndex = 11;
+            this.bt2.Text = "Verbindung testen";
+            this.bt2.UseVisualStyleBackColor = true;
+            // 
+            // tbPort2
+            // 
+            this.tbPort2.Location = new System.Drawing.Point(351, 13);
+            this.tbPort2.Name = "tbPort2";
+            this.tbPort2.Size = new System.Drawing.Size(53, 23);
+            this.tbPort2.TabIndex = 9;
             // 
             // lbPort2
             // 
@@ -310,33 +344,6 @@ namespace JRMigrator
             this.taSummary.Size = new System.Drawing.Size(494, 99);
             this.taSummary.TabIndex = 0;
             // 
-            // bt2
-            // 
-            this.bt2.Location = new System.Drawing.Point(310, 51);
-            this.bt2.Name = "bt2";
-            this.bt2.Size = new System.Drawing.Size(126, 23);
-            this.bt2.TabIndex = 11;
-            this.bt2.Text = "Verbindung testen";
-            this.bt2.UseVisualStyleBackColor = true;
-            // 
-            // cb1
-            // 
-            this.cb1.Location = new System.Drawing.Point(313, 166);
-            this.cb1.Name = "cb1";
-            this.cb1.Size = new System.Drawing.Size(144, 23);
-            this.cb1.TabIndex = 11;
-            this.cb1.Text = "Passwort anzeigen";
-            this.cb1.UseVisualStyleBackColor = true;
-            // 
-            // cb2
-            // 
-            this.cb2.Location = new System.Drawing.Point(310, 165);
-            this.cb2.Name = "cb2";
-            this.cb2.Size = new System.Drawing.Size(126, 23);
-            this.cb2.TabIndex = 12;
-            this.cb2.Text = "Passwort anzeigen";
-            this.cb2.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -361,8 +368,6 @@ namespace JRMigrator
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox gbSum;
@@ -391,7 +396,28 @@ namespace JRMigrator
         private System.Windows.Forms.Button bt2;
         private System.Windows.Forms.CheckBox cb2;
         private System.Windows.Forms.CheckBox cb1;
+        public void test()
+        {
+            cbDB1.Items.Add(DBType.CubridDB+"");
+            cbDB1.Items.Add(DBType.OracleSQL+"");
+            cbDB1.Items.Add(DBType.MSSQL+"");
+            cbDB2.Items.Add(DBType.CubridDB+"");
+            cbDB2.Items.Add(DBType.OracleSQL+"");
+            cbDB2.Items.Add(DBType.MSSQL+"");
+            cbDB1.SelectedIndex = cbDB1.FindStringExact(DBType.CubridDB + "");
+            cbDB2.SelectedIndex = cbDB2.FindStringExact(DBType.OracleSQL + "");
+        }
+
+        public void call()
+        {
+           Class1.start(tbAdr1.Text,tbPort1.Text,tbUser1.Text,tbPw1.Text);
+           //Class1.start();
+        }
+
+        private System.Windows.Forms.TextBox tbPort1;
+        private System.Windows.Forms.TextBox tbPort2;
     }
+    
     
 }
 
