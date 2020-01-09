@@ -13,11 +13,17 @@ namespace JRMigrator.DB
         private static CubridSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
         private CUBRIDConnection conn;
+
+        public CubridSQLConnection(int timeout)
+        {
+            conn.SetConnectionTimeout(timeout);
+        }
+
         public static CubridSQLConnection getCubridConnection()
         {
             if (theInstance == null)
             {
-                theInstance = new CubridSQLConnection();
+                theInstance = new CubridSQLConnection(2);
             }
             return theInstance;
         }
