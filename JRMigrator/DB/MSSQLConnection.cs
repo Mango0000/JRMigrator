@@ -11,6 +11,31 @@ namespace JRMigrator.DB
         private static MSSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
         private SqlConnection conn = null;
+
+        public static MSSQLConnection getCubridConnection()
+        {
+            if (theInstance == null)
+            {
+                theInstance = new MSSQLConnection();
+            }
+            return theInstance;
+        }
+
+        public Boolean OpenConnection()
+        {
+            if (connectionString != null)
+            {
+                conn = new SqlConnection(connectionString.getConnectionString());
+                conn.Open();
+                return true;
+            }
+            return false;
+        }
+
+        public void CloseConnection()
+        {
+            conn.Close();
+        }
         private static void test()
         {
             string ip="192.168.0.1";

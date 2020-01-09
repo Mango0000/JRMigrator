@@ -26,7 +26,7 @@ namespace JRMigrator.beans
 
         public String getConnectionString()
         {
-            return String.Format("server={0};database={1};port={2};user={3};password={4}", ip, databasename, port, username, password);
+            return String.Format("server={0};database={1};port={2};user={3};password={4};Connection Timeout=3", ip, databasename, port, username, password);
         }
     }
 }
