@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.60" />
+    <PackageReference Include="Oracle.ManagedDataAccess" Version="19.6.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="CUBRID.Data">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 

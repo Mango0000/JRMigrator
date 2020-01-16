@@ -2,6 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Text;
 
 namespace JRMigrator.DB
@@ -35,6 +36,28 @@ namespace JRMigrator.DB
         public void CloseConnection()
         {
             conn.Close();
+        }
+
+        public List<String> getAllTables()
+        {
+            String sqlString = "SELECT owner, table_name FROM all_tables WHERE owner = user; ";
+            var tableList = new List<String>();
+            using(OracleCommand omd = new OracleCommand(sqlString, conn))
+            {
+                using(DbDataReader reader = omd.ExecuteReader())
+                {
+                    while(reader.Read())
+                    {
+                        Object[] values = new Object[reader.FieldCount];
+                        int fieldCount = reader.GetValues(values);
+                        foreach (Object obj in values)
+                        {
+                            tableList.Add(obj.ToString());
+                        }
+                    }
+                }
+            }
+            return tableList;
         }
     }
 }
