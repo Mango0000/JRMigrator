@@ -1,4 +1,5 @@
-﻿using JRMigrator.beans;
+﻿using CUBRID.Data.CUBRIDClient;
+using JRMigrator.beans;
 using System;
 using System.Data.Common;
 

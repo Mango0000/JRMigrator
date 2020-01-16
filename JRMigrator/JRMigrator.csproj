@@ -15,8 +15,7 @@
 
   <ItemGroup>
     <Reference Include="CUBRID.Data">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
-      <Aliases>CUBRID</Aliases>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 
