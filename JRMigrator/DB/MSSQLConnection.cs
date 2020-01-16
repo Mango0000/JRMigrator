@@ -36,6 +36,13 @@ namespace JRMigrator.DB
         {
             conn.Close();
         }
+
+        public List<String> getTables()
+        {
+
+            return null;
+        }
+
         private static void test()
         {
             string ip="192.168.0.1";

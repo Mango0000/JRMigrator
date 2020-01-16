@@ -2,6 +2,7 @@
 using CUBRID::CUBRID.Data.CUBRIDClient;
 using JRMigrator.beans;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace JRMigrator.DB
@@ -37,6 +38,7 @@ namespace JRMigrator.DB
         {
             conn.Close();
         }
+        
         private static void test()
         {
             String ip = "192.168.0.1";
