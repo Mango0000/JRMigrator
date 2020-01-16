@@ -24,6 +24,11 @@ namespace JRMigrator.beans
             this.password = password;
         }
 
+        internal string getOracleConnectionString()
+        {
+            return String.Format("Data Source=(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = {0})(PORT = {2}))(CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = orcl)));Password = {4};User ID = {3}; Connection Timeout=3;", ip, databasename, port, username, password);
+        }
+
         public String getCubridConnectionString()
         {
             return String.Format("server={0};database={1};port={2};user={3};password={4};Connection Timeout=3", ip, databasename, port, username, password);
