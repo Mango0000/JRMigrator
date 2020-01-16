@@ -467,7 +467,7 @@ namespace JRMigrator
                 type = 1;
             }
 
-            if (compare.Equals(DBType.MSSQL))
+            if (compare.Equals(DBType.MSSQL+""))
             {
                 type = 2;
             }

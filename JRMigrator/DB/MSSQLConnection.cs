@@ -11,6 +11,8 @@ namespace JRMigrator.DB
         private static MSSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
         private SqlConnection conn = null;
+        private String sqlGetTables = "SELECT TABLE_NAME "+"FROM INFORMATION_SCHEMA.TABLES";
+        SqlCommand sqlcommand;
 
         public static MSSQLConnection getConnection()
         {
@@ -39,7 +41,7 @@ namespace JRMigrator.DB
 
         public List<String> getTables()
         {
-
+            sqlcommand = new SqlCommand(sqlGetTables);
             return null;
         }
 
