@@ -1,9 +1,9 @@
-﻿extern alias CUBRID;
-using CUBRID::CUBRID.Data.CUBRIDClient;
+﻿
 using JRMigrator.beans;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using CUBRID.Data.CUBRIDClient;
 
 namespace JRMigrator.DB
 {

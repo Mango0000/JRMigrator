@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows.Forms;
 using JRMigrator.beans;
 using JRMigrator.BL;
@@ -459,11 +460,18 @@ namespace JRMigrator
 
         public void call()
         {
-            String compare = cbDB1.GetItemText(cbDB1.SelectedItem); 
+            String compare = cbDB1.GetItemText(cbDB1.SelectedItem);
+            int type = 0;
             if (compare.Equals(DBType.CubridDB+""))
             {
-                Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text);
+                type = 1;
             }
+
+            if (compare.Equals(DBType.MSSQL))
+            {
+                type = 2;
+            }
+            Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text,type);
 
             //Class1.start();
         }
