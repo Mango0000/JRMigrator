@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows.Forms;
 using JRMigrator.beans;
 using JRMigrator.BL;
@@ -463,6 +464,11 @@ namespace JRMigrator
             if (compare.Equals(DBType.CubridDB+""))
             {
                 Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text);
+            }
+
+            if (compare.Equals(DBType.MSSQL))
+            {
+                
             }
 
             //Class1.start();

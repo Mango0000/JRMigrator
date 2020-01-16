@@ -15,7 +15,9 @@ namespace JRMigrator.BL
         {
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
-            CubridSQLConnection csql = CubridSQLConnection.getCubridConnection();
+            CubridSQLConnection csql = CubridSQLConnection.getConnection();
+            MSSQLConnection ms=MSSQLConnection.getConnection();
+            
             csql.connectionString = dbfrom;
 
             Console.Out.WriteLine(dbfrom.ToString());
