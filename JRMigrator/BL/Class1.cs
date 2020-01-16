@@ -18,6 +18,7 @@ namespace JRMigrator.BL
             OracleSQLConnection os=null;
             CubridSQLConnection csql=null;
             MSSQLConnection ms=null;
+            MessageBox.Show(type+"");
             try
             {
             if (type == 1)
@@ -27,7 +28,7 @@ namespace JRMigrator.BL
                 Console.Out.WriteLine(csql.OpenConnection() ? "erfolgreich" : "gescheitert");
             }
 
-            if (type == 2)
+            else if (type == 2)
             {
                 ms = MSSQLConnection.getConnection();
                 ms.connectionString = dbfrom;
@@ -56,6 +57,7 @@ namespace JRMigrator.BL
                 else
                 {
                     MessageBox.Show("Invalid Port or Address");
+                    MessageBox.Show(e.ToString());
                 }
             }
            // csql.CloseConnection();
