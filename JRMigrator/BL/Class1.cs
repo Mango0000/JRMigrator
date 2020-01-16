@@ -11,17 +11,38 @@ namespace JRMigrator.BL
     class Class1
     {
         private static DBStringBuilder dbfrom;
-        public static void start(String ip,String port,String databasename,String username,String password)
+        public static void start(String ip,String port,String databasename,String username,String password,int type)
         {
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
-            OracleSQLConnection csql = OracleSQLConnection.getCubridConnection();
-            csql.connectionString = dbfrom;
-
-            Console.Out.WriteLine(dbfrom.ToString());
+            OracleSQLConnection os=null;
+            CubridSQLConnection csql=null;
+            MSSQLConnection ms=null;
+            MessageBox.Show(type+"");
             try
             {
+            if (type == 1)
+            {
+               csql = CubridSQLConnection.getConnection();
+                csql.connectionString = dbfrom;
                 Console.Out.WriteLine(csql.OpenConnection() ? "erfolgreich" : "gescheitert");
+            }
+
+            else if (type == 2)
+            {
+                ms = MSSQLConnection.getConnection();
+                ms.connectionString = dbfrom;
+                Console.Out.WriteLine(ms.OpenConnection() ? "erfolgreich" : "gescheitert");  
+            }
+            else
+            {
+                os=OracleSQLConnection.getConnection();
+                os.connectionString = dbfrom;
+                Console.Out.WriteLine(os.OpenConnection() ? "erfolgreich" : "gescheitert"); 
+            }
+            Console.Out.WriteLine(dbfrom.ToString());
+            
+
             }
             catch (Exception e)
             {
@@ -36,9 +57,12 @@ namespace JRMigrator.BL
                 else
                 {
                     MessageBox.Show("Invalid Port or Address");
+                    MessageBox.Show(e.ToString());
                 }
             }
-            csql.CloseConnection();
+           // csql.CloseConnection();
+            //ms.CloseConnection();
+           // os.CloseConnection();
         }
     }
 }
