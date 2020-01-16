@@ -289,6 +289,7 @@ namespace JRMigrator
             this.bt2.TabIndex = 11;
             this.bt2.Text = "Verbindung testen";
             this.bt2.UseVisualStyleBackColor = true;
+            this.bt2.Click += new System.EventHandler(this.bt2_Click);
             // 
             // tbPort2
             // 
@@ -458,7 +459,7 @@ namespace JRMigrator
             cbDB2.SelectedIndex = cbDB2.FindStringExact(DBType.OracleSQL + "");
         }
 
-        public void call()
+        public void callDB1()
         {
             String compare = cbDB1.GetItemText(cbDB1.SelectedItem);
             int type = 0;
@@ -466,14 +467,26 @@ namespace JRMigrator
             {
                 type = 1;
             }
-
-            if (compare.Equals(DBType.MSSQL+""))
-            {
-                type = 2;
-            }
             Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text,type);
 
             //Class1.start();
+        }
+
+        public void callDB2()
+        {
+            String compare2 = cbDB2.GetItemText(cbDB2.SelectedItem);
+            int type = 0;
+            if (compare2.Equals(DBType.OracleSQL+""))
+            {
+                type = 3;
+            }
+
+            if (compare2.Equals(DBType.MSSQL+""))
+            {
+                type = 2;
+            }
+            Class1.start(tbAdr2.Text, tbPort2.Text, tbdatabasename2.Text, tbUser2.Text, tbPw2.Text,type);
+
         }
 
         private System.Windows.Forms.TextBox tbPort1;
