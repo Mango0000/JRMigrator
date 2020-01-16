@@ -41,8 +41,14 @@ namespace JRMigrator.DB
 
         public List<String> getTables()
         {
-            sqlcommand = new SqlCommand(sqlGetTables);
-            return null;
+            sqlcommand = new SqlCommand(sqlGetTables, conn);
+            SqlDataReader reader = sqlcommand.ExecuteReader();
+            List<String> tables = new List<String>();
+            while (reader.Read())
+            {
+                tables.Add(reader.GetString(0));
+            }
+            return tables;
         }
 
         private static void test()
