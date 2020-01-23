@@ -38,7 +38,7 @@ namespace JRMigrator.BL
                       DataType type = infos[j].datatype;
                       Boolean nullable = infos[j].nullable;
                       String pk=infos[j].PrimaryKeyName;
-                      if (pk == null)
+                      if (pk != null)
                       {
                           cols += name + " " + type + " primary key"+", ";
                       }
@@ -48,7 +48,7 @@ namespace JRMigrator.BL
                       }
 
                       MessageBox.Show(cols);
-
+                    cols = "";
                   }
                 /*  String insert = "Create Table " + tables[i] + " ( test int primary key);";
                   CUBRIDCommand cmd=new CUBRIDCommand(insert,cs);
