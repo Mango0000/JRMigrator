@@ -40,7 +40,7 @@ namespace JRMigrator.DB
 
         public List<String> getAllTables()
         {
-            String sqlString = "SELECT owner, table_name FROM all_tables WHERE owner = user; ";
+            String sqlString = "SELECT table_name FROM all_tables WHERE owner = user;";
             var tableList = new List<String>();
             using(OracleCommand omd = new OracleCommand(sqlString, conn))
             {
@@ -58,6 +58,13 @@ namespace JRMigrator.DB
                 }
             }
             return tableList;
+        }
+
+        public List<String> getTableColumnTypes(String tableName)
+        {
+            var columnTypes = new List<String>();
+
+            return columnTypes;
         }
     }
 }
