@@ -35,7 +35,11 @@ namespace JRMigrator.BL
                   for (int j = 0; j <infos.Count; j++)
                   {
                       String name=infos[j].columnname;
-                      DataType type = infos[j].datatype;
+                      String type = infos[j].datatype+"";
+                      if (type == DataType.NUMBER+"")
+                      {
+                          type = "numeric";
+                      }
                       Boolean nullable = infos[j].nullable;
                       String pk=infos[j].PrimaryKeyName;
                       if (j == infos.Count - 1)
