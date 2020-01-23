@@ -54,15 +54,8 @@ namespace JRMigrator.DB
 
         public List<TableInfo> getInfo(String tablename)
         {
-            Console.Out.WriteLine("tablename:"+tablename);
-            StringBuilder geti = new StringBuilder();
-            geti.Append("SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_NAME, r.CONSTRAINT_TYPE");
-            geti.Append("FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN (SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE");
-            geti.Append("FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME");
-            geti.Append("WHERE c.TABLE_NAME = '"+tablename+"') r ON f.COLUMN_NAME = r.COLUMN_NAME");
-            geti.Append("WHERE f.TABLE_NAME = '"+tablename+"';");
-            String duhurensohn = "SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_NAME, r.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN(SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME WHERE c.TABLE_NAME = 'EMP') r ON f.COLUMN_NAME = r.COLUMN_NAME WHERE f.TABLE_NAME = 'EMP'";
-            sqlcommand = new SqlCommand(duhurensohn, conn);
+            String sqlstring = "SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_NAME, r.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN(SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME WHERE c.TABLE_NAME = '"+ tablename+"') r ON f.COLUMN_NAME = r.COLUMN_NAME WHERE f.TABLE_NAME = '"+ tablename+"'";
+            sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             List<TableInfo> tbinf = new List<TableInfo>();
             String column_name;
@@ -109,6 +102,9 @@ namespace JRMigrator.DB
             else if (data.Equals("datetime"))
             {
                 return DataType.DATETIME;
+            }else if (data.Equals("numeric"))
+            {
+                return DataType.NUMBER;
             }
             return DataType.NULL;
         }
