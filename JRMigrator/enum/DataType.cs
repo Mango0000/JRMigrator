@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JRMigrator.beans
 {
-    enum DataType
+    public enum DataType
     {
         CHAR,
         VARCHAR,

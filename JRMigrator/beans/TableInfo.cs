@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JRMigrator.beans
 {
-    class TableInfo
+    public class TableInfo
     {
         public String columnname { get; set; }
         public Boolean nullable { get; set; }

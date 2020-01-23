@@ -11,11 +11,12 @@ namespace JRMigrator.BL
 {
     class Class1
     {
+        private static MigrateTest mt=new MigrateTest();
         private static DBStringBuilder dbfrom;
-        private static  CUBRIDConnection cs=null;
-        private static OracleSQLConnection os=null;
-       private static CubridSQLConnection csql=null;
-        private static MSSQLConnection ms=null;
+        private static OracleSQLConnection os { get; set; } =null;
+       private static CubridSQLConnection csql { get; set; } =null;
+       public static MSSQLConnection ms { get; set; }=null;
+       private static CUBRIDConnection cs;
         public static void start(String ip,String port,String databasename,String username,String password,int type)
         {
             DBType databasetype = DBType.CubridDB;
@@ -29,7 +30,7 @@ namespace JRMigrator.BL
                csql = CubridSQLConnection.getConnection();
                 csql.connectionString = dbfrom;
                 Console.Out.WriteLine(csql.OpenConnection() ? "erfolgreich" : "gescheitert");
-
+                cs = csql.getConn();
 
             }
 
@@ -72,6 +73,16 @@ namespace JRMigrator.BL
            // csql.CloseConnection();
             //ms.CloseConnection();
            // os.CloseConnection();
+        }
+
+        public static void migrateOS()
+        {
+           mt.getOracleTables(os,cs); 
+        }
+
+        public static void migrateMS()
+        {
+            mt.getMSSqlTables(ms,cs);
         }
     }
 }

@@ -500,8 +500,18 @@ namespace JRMigrator
             Class1.start(tbAdr2.Text, tbPort2.Text, tbdatabasename2.Text, tbUser2.Text, tbPw2.Text,type);
 
         }
-        public void migrate() {
-        MigrateTest mt=new MigrateTest();
+
+        public void migrate()
+        {
+
+            if (cbDB1.GetItemText(cbDB2.SelectedItem) == "MSSQL")
+            {
+Class1.migrateMS();
+            }
+            else
+            {
+                Class1.migrateOS();
+            }
         }
 
         private System.Windows.Forms.TextBox tbPort1;
