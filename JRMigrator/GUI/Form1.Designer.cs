@@ -71,6 +71,7 @@ namespace JRMigrator
             this.lbDB2 = new System.Windows.Forms.Label();
             this.gbSum = new System.Windows.Forms.GroupBox();
             this.taSummary = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.gbDB1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gbDB2.SuspendLayout();
@@ -237,6 +238,7 @@ namespace JRMigrator
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.tbdatabasename2);
             this.panel2.Controls.Add(this.cb2);
@@ -253,7 +255,7 @@ namespace JRMigrator
             this.panel2.Controls.Add(this.lbDB2);
             this.panel2.Location = new System.Drawing.Point(10, 22);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(457, 211);
+            this.panel2.Size = new System.Drawing.Size(457, 215);
             this.panel2.TabIndex = 4;
             // 
             // label2
@@ -273,7 +275,7 @@ namespace JRMigrator
             // 
             // cb2
             // 
-            this.cb2.Location = new System.Drawing.Point(310, 165);
+            this.cb2.Location = new System.Drawing.Point(310, 155);
             this.cb2.Name = "cb2";
             this.cb2.Size = new System.Drawing.Size(126, 23);
             this.cb2.TabIndex = 12;
@@ -386,6 +388,16 @@ namespace JRMigrator
             this.taSummary.Size = new System.Drawing.Size(494, 99);
             this.taSummary.TabIndex = 0;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(313, 184);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(141, 28);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "Daten übertragen";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -488,6 +500,9 @@ namespace JRMigrator
             Class1.start(tbAdr2.Text, tbPort2.Text, tbdatabasename2.Text, tbUser2.Text, tbPw2.Text,type);
 
         }
+        public void migrate() {
+        MigrateTest mt=new MigrateTest();
+        }
 
         private System.Windows.Forms.TextBox tbPort1;
         private System.Windows.Forms.TextBox tbPort2;
@@ -495,6 +510,7 @@ namespace JRMigrator
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbdatabasename2;
         private System.Windows.Forms.Label lb1;
+        private System.Windows.Forms.Button button1;
     }
     
     

@@ -9,7 +9,7 @@ namespace JRMigrator.BL
     public class MigrateTest
     {
         private List<String> tables;
-        public void tablesTest(OracleSQLConnection os,CUBRIDConnection cs)
+        public void getOracleTables(OracleSQLConnection os,CUBRIDConnection cs)
         {
            
            tables=os.GetAllTables();
@@ -20,6 +20,18 @@ namespace JRMigrator.BL
               cmd.ExecuteNonQuery();
               //MessageBox.Show();
            }
+        }
+        public void getMSSqlTables(MSSQLConnection ms,CUBRIDConnection cs)
+        {
+
+            tables = ms.getTables();
+            for (int i = 0; i <tables.Count; i++)
+            {
+                String insert = "Create Table " + tables[i] + " ( test int primary key);";
+                CUBRIDCommand cmd=new CUBRIDCommand(insert,cs);
+                cmd.ExecuteNonQuery();
+                //MessageBox.Show();
+            }
         }
      
     }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JRMigrator.DB
 {
-    class MSSQLConnection
+    public class MSSQLConnection
     {
         private static MSSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;

@@ -20,10 +20,7 @@ namespace JRMigrator.BL
         {
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
-            
-       
-            ;
-           
+
             //MessageBox.Show(type+"");
             try
             {
@@ -32,8 +29,7 @@ namespace JRMigrator.BL
                csql = CubridSQLConnection.getConnection();
                 csql.connectionString = dbfrom;
                 Console.Out.WriteLine(csql.OpenConnection() ? "erfolgreich" : "gescheitert");
-                cs = csql.getConn();
-                
+
 
             }
 
@@ -49,9 +45,7 @@ namespace JRMigrator.BL
                 os=OracleSQLConnection.getConnection();
                 os.connectionString = dbfrom;
                 Console.Out.WriteLine(os.OpenConnection() ? "erfolgreich" : "gescheitert"); 
-                MigrateTest mt=new MigrateTest();
-               mt.tablesTest(os,cs);
-                 os.CloseConnection();
+               
              
                 
             }
