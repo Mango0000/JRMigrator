@@ -4,8 +4,7 @@ using System.Text;
 
 namespace JRMigrator.beans
 {
-    
-    class DBStringBuilder
+    public class DBStringBuilder
     {
         public DBType databasetype { get; set; }
         public String ip { get; set; }

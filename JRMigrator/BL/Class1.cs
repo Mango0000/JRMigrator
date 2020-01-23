@@ -5,20 +5,26 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows.Forms;
+using CUBRID.Data.CUBRIDClient;
 
 namespace JRMigrator.BL
 {
     class Class1
     {
         private static DBStringBuilder dbfrom;
+        private static  CUBRIDConnection cs=null;
+        private static OracleSQLConnection os=null;
+       private static CubridSQLConnection csql=null;
+        private static MSSQLConnection ms=null;
         public static void start(String ip,String port,String databasename,String username,String password,int type)
         {
             DBType databasetype = DBType.CubridDB;
             dbfrom = new DBStringBuilder(databasetype, ip, port, databasename, username, password);
-            OracleSQLConnection os=null;
-            CubridSQLConnection csql=null;
-            MSSQLConnection ms=null;
-            MessageBox.Show(type+"");
+            
+       
+            ;
+           
+            //MessageBox.Show(type+"");
             try
             {
             if (type == 1)
@@ -26,6 +32,9 @@ namespace JRMigrator.BL
                csql = CubridSQLConnection.getConnection();
                 csql.connectionString = dbfrom;
                 Console.Out.WriteLine(csql.OpenConnection() ? "erfolgreich" : "gescheitert");
+                cs = csql.getConn();
+                
+
             }
 
             else if (type == 2)
@@ -36,9 +45,15 @@ namespace JRMigrator.BL
             }
             else
             {
+               // os.CloseConnection();
                 os=OracleSQLConnection.getConnection();
                 os.connectionString = dbfrom;
                 Console.Out.WriteLine(os.OpenConnection() ? "erfolgreich" : "gescheitert"); 
+                MigrateTest mt=new MigrateTest();
+               mt.tablesTest(os,cs);
+                 os.CloseConnection();
+             
+                
             }
             Console.Out.WriteLine(dbfrom.ToString());
             

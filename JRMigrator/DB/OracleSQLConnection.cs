@@ -7,7 +7,7 @@ using System.Text;
 
 namespace JRMigrator.DB
 {
-    class OracleSQLConnection
+    public class OracleSQLConnection
     {
         private static OracleSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
@@ -38,9 +38,9 @@ namespace JRMigrator.DB
             conn.Close();
         }
 
-        public List<String> getAllTables()
+        public List<String> GetAllTables()
         {
-            String sqlString = "SELECT owner, table_name FROM all_tables WHERE owner = user; ";
+            String sqlString = "SELECT table_name FROM all_tables WHERE owner = user ";
             var tableList = new List<String>();
             using(OracleCommand omd = new OracleCommand(sqlString, conn))
             {
