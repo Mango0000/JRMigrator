@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CUBRID.Data, Version=10.1.0.0, Culture=neutral, PublicKeyToken=de9d5b1064656ed6">
-      <HintPath>C:\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
+    <Reference Include="CUBRID.Data">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\CUBRID\CUBRID ADO.NET Data Provider 10.1.0\CUBRID.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 
