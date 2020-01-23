@@ -48,11 +48,12 @@ namespace JRMigrator.BL
                       }
 
                       MessageBox.Show(cols);
-                    cols = "";
                   }
-                /*  String insert = "Create Table " + tables[i] + " ( test int primary key);";
+                  
+                 String insert = "Create Table " + tables[i] + "( "+cols+");";
                   CUBRIDCommand cmd=new CUBRIDCommand(insert,cs);
-                  cmd.ExecuteNonQuery();*/
+                  cmd.ExecuteNonQuery();
+                  cols = "";
                   //MessageBox.Show();
               }
           
