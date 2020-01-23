@@ -38,13 +38,27 @@ namespace JRMigrator.BL
                       DataType type = infos[j].datatype;
                       Boolean nullable = infos[j].nullable;
                       String pk=infos[j].PrimaryKeyName;
-                      if (pk != null)
+                      if (j == infos.Count - 1)
                       {
-                          cols += name + " " + type + " primary key"+", ";
+                          if (pk != null)
+                          {
+                              cols += name + " " + type + " primary key";
+                          }
+                          else
+                          {
+                              cols += name + " " + type;
+                          } 
                       }
                       else
                       {
-                          cols += name + " " + type + ", ";   
+                          if (pk != null)
+                          {
+                              cols += name + " " + type + " primary key" + ", ";
+                          }
+                          else
+                          {
+                              cols += name + " " + type + ", ";
+                          }
                       }
 
                       MessageBox.Show(cols);
