@@ -38,7 +38,7 @@ namespace JRMigrator.BL
                       DataType type = infos[j].datatype;
                       Boolean nullable = infos[j].nullable;
                       String pk=infos[j].PrimaryKeyName;
-                      if (pk.Equals("null"))
+                      if (pk == null)
                       {
                           cols += name + " " + type + " primary key"+", ";
                       }

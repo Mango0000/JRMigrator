@@ -83,7 +83,6 @@ namespace JRMigrator.DB
                 {
                     primary_key_name = null;
                 }
-                datatype = getDType(primary_key_name);
                 tbinf.Add(new TableInfo(column_name, is_nullable, datatype, primary_key_name));
             }
             reader.Close();
