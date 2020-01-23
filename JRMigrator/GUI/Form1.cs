@@ -25,7 +25,7 @@ namespace JRMigrator
 
         private void bt1_Click(object sender, EventArgs e)
         {
-            call();
+            callDB1();
         }
 
 
@@ -54,6 +54,11 @@ namespace JRMigrator
                 tbPw2.PasswordChar = '\0';
               
             }
+        }
+
+        private void bt2_Click(object sender, EventArgs e)
+        {
+            callDB2();
         }
     }
 }

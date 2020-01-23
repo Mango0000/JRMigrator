@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JRMigrator.beans
 {
-        enum DBType
+    public enum DBType
         {
             CubridDB,
             OracleSQL,

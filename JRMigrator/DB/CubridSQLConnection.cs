@@ -7,11 +7,11 @@ using CUBRID.Data.CUBRIDClient;
 
 namespace JRMigrator.DB
 {
-    class CubridSQLConnection
+    public class CubridSQLConnection
     {
         private static CubridSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
-        private CUBRIDConnection conn = null;
+        public CUBRIDConnection conn = null;
 
         public static CubridSQLConnection getConnection()
         {
@@ -34,11 +34,16 @@ namespace JRMigrator.DB
             return false;
         }
 
+       
+
         public void CloseConnection()
         {
             conn.Close();
         }
-        
+        public CUBRIDConnection getConn()
+        {
+            return conn;
+    }
         private static void test()
         {
             String ip = "192.168.0.1";
