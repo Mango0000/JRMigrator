@@ -398,16 +398,16 @@ namespace JRMigrator
 
         public void migrate()
         {
+            Class1 cs=new Class1();
 
             if (cbDB1.GetItemText(cbDB2.SelectedItem) == "MSSQL")
             {
-                Class1.migrateMS();
-                MigrateTest mt=new MigrateTest();
-                taSummary.Text = mt.getErfolgreich();
+                cs.migrateMS();
+                taSummary.Text = cs.erfolgreich;
             }
             else
             {
-                Class1.migrateOS();
+                cs.migrateOS();
             }
         }
 

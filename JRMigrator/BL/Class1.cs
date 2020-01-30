@@ -13,6 +13,7 @@ namespace JRMigrator.BL
     {
         private static MigrateTest mt=new MigrateTest();
         private static DBStringBuilder dbfrom;
+        public String erfolgreich{ get; set; } =null;
         private static OracleSQLConnection os { get; set; } =null;
        private static CubridSQLConnection csql { get; set; } =null;
        public static MSSQLConnection ms { get; set; }=null;
@@ -75,14 +76,16 @@ namespace JRMigrator.BL
              
         }
 
-        public static void migrateOS()
+        public void migrateOS()
         {
            mt.getOracleTables(os,cs); 
+           
         }
 
-        public static void migrateMS()
+        public void migrateMS()
         {
             mt.getMSSqlTables(ms,cs);
+           erfolgreich= mt.getErfolgreich();
         }
     }
 }
