@@ -282,6 +282,7 @@ namespace JRMigrator
             this.tbdatabasename2.Name = "tbdatabasename2";
             this.tbdatabasename2.Size = new System.Drawing.Size(77, 23);
             this.tbdatabasename2.TabIndex = 13;
+            this.tbdatabasename2.Text = "testdatabase";
             // 
             // cb2
             // 
@@ -309,6 +310,7 @@ namespace JRMigrator
             this.tbPort2.Name = "tbPort2";
             this.tbPort2.Size = new System.Drawing.Size(53, 23);
             this.tbPort2.TabIndex = 9;
+            this.tbPort2.Text = "1433";
             // 
             // lbPort2
             // 
@@ -333,6 +335,7 @@ namespace JRMigrator
             this.tbUser2.Name = "tbUser2";
             this.tbUser2.Size = new System.Drawing.Size(115, 23);
             this.tbUser2.TabIndex = 6;
+            this.tbUser2.Text = "SA";
             // 
             // tbAdr2
             // 

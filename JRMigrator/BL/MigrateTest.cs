@@ -108,11 +108,11 @@ namespace JRMigrator.BL
                       CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                       cmd.ExecuteNonQuery();
                       cols = "";
-                      erfolgreich = "Migration of MSSQL Tables complete...";
+                      erfolgreich = "Migration of MSSQL tables complete...";
                   }
                   catch (Exception e)
                   {
-                      erfolgreich = "Migration of MSSQL Tables failed...";  
+                      erfolgreich = "Migration of MSSQL tables failed...";  
                   }
 
                   //MessageBox.Show();
