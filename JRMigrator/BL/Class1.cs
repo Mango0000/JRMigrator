@@ -71,18 +71,7 @@ namespace JRMigrator.BL
                 }
             }
 
-            if (csql != null)
-            {
-                csql.CloseConnection();
-                cs.Close();
-            } if (ms!=null)
-            {
-               ms.CloseConnection(); 
-            }
-             if (os!=null)
-            {
-                os.CloseConnection();
-            }
+          
              
         }
 
