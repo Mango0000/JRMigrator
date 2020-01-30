@@ -5,6 +5,8 @@ namespace JRMigrator
 {
     public partial class Form1 : Form
     {
+        private int DB1tested = 0;
+        private int DB2tested = 0;
         public Form1()
         {
             
@@ -25,6 +27,7 @@ namespace JRMigrator
 
         private void bt1_Click(object sender, EventArgs e)
         {
+            DB1tested = 1;
             callDB1();
         }
 
@@ -58,12 +61,21 @@ namespace JRMigrator
 
         private void bt2_Click(object sender, EventArgs e)
         {
+            DB2tested = 1;
             callDB2();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void daten_Click(object sender, EventArgs e)
         {
+            if (DB1tested == 0 && DB2tested == 0)
+            {
+                callDB1();
+                callDB2();
+            }
+
             migrate();
         }
+
+      
     }
 }

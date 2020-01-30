@@ -70,9 +70,20 @@ namespace JRMigrator.BL
                     MessageBox.Show(e.ToString());
                 }
             }
-           // csql.CloseConnection();
-            //ms.CloseConnection();
-           // os.CloseConnection();
+
+            if (csql != null)
+            {
+                csql.CloseConnection();
+                cs.Close();
+            } if (ms!=null)
+            {
+               ms.CloseConnection(); 
+            }
+             if (os!=null)
+            {
+                os.CloseConnection();
+            }
+             
         }
 
         public static void migrateOS()
