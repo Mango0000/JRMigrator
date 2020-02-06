@@ -398,6 +398,8 @@ namespace JRMigrator
             Class1 cs=new Class1();
 
            cs.migrate();
+           taSummary.Text=cs.getErfolgreich();
+           
         }
 
         private System.Windows.Forms.TextBox tbPort1;

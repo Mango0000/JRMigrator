@@ -76,6 +76,11 @@ namespace JRMigrator.BL
              
         }
 
+        public String getErfolgreich()
+        {
+           return mt.getErfolgreich();
+        }
+
         public void migrate()
         {
             mt.migrateTables(os,ms,cs);
