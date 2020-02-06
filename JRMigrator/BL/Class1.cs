@@ -76,16 +76,10 @@ namespace JRMigrator.BL
              
         }
 
-        public void migrateOS()
+        public void migrate()
         {
-           mt.getOracleTables(os,cs); 
-           
+            mt.migrateTables(os,ms,cs);
         }
 
-        public void migrateMS()
-        {
-            mt.getMSSqlTables(ms,cs);
-           erfolgreich= mt.getErfolgreich();
-        }
     }
 }

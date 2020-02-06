@@ -11,119 +11,103 @@ namespace JRMigrator.BL
     {
         private List<String> tables;
         private String erfolgreich;
-        public void getOracleTables(OracleSQLConnection os, CUBRIDConnection cs)
+        private List<TableInfo> infos;
+
+        public void migrateTables(OracleSQLConnection os,MSSQLConnection ms, CUBRIDConnection cs)
         {
-           /* String cols="";
-            for (int i = 0; i <tables.Count; i++)
+            String cols = "";
+            if (ms == null)
             {
-                List<TableInfo> infos= os.getInfo(tables[i]);
-                for (int j = 0; j <infos.Count; j++)
+                tables = os.GetAllTables();
+            }
+            else
+            {
+                tables = ms.getTables();  
+            }
+
+            for (int i = 0; i < tables.Count; i++)
+            {
+                if (ms == null)
                 {
-                    String name=infos[j].columnname;
-                    String type = infos[j].datatype+"";
-                    if (type == DataType.NUMBER+"")
+                    infos = os.getInfo(tables[i]);
+                }
+                else
+                {
+                    infos = ms.getInfo(tables[i]);  
+                }
+
+                for (int j = 0; j < infos.Count; j++)
+                {
+                    String name = infos[j].columnname;
+                    String type = infos[j].datatype + "";
+                    if (type == DataType.NUMBER + "")
                     {
                         type = "numeric";
                     }
+
                     Boolean nullable = infos[j].nullable;
-                    String pk=infos[j].PrimaryKeyName;
+                    Boolean pk = infos[j].isPrimaryKey;
                     if (j == infos.Count - 1)
                     {
-                        if (pk != null)
+                        if (pk)
                         {
                             cols += name + " " + type + " primary key";
                         }
                         else
                         {
-                            cols += name + " " + type;
-                        } 
+                            if (!nullable)
+                            {
+                                cols += name + " " + type + "not null";
+                            }
+                            else
+                            {
+                                
+                            }
+                        }
                     }
                     else
                     {
-                        if (pk != null)
+                        if (pk)
                         {
                             cols += name + " " + type + " primary key" + ", ";
                         }
                         else
                         {
-                            cols += name + " " + type + ", ";
+                            if (!nullable)
+                            {
+                                cols += name + " " + type + "not null"+", ";
+                            }
+                            else
+                            {
+                                cols += name + " " + type+",";
+                            }
                         }
                     }
 
                     //  MessageBox.Show(cols);
                 }
-                  
-                String insert = "Create Table " + tables[i] + "( "+cols+");";
-                CUBRIDCommand cmd=new CUBRIDCommand(insert,cs);
-                cmd.ExecuteNonQuery();
-                cols = "";*/
+
+                try
+                {
+                    String insert = "Create Table " + tables[i] + "( " + cols + ");";
+                    CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                    cmd.ExecuteNonQuery();
+                    cols = "";
+                    erfolgreich = "Migration of Tables successfully completed...";
+                }
+                catch (Exception e)
+                {
+                    erfolgreich = "Migration of tables failed...";
+                }
+
+            }
         }
 
-        public void getMSSqlTables(MSSQLConnection ms, CUBRIDConnection cs)
-        {
-            tables = ms.getTables();
-            String cols="";
-              for (int i = 0; i <tables.Count; i++)
-              {
-                  List<TableInfo> infos= ms.getInfo(tables[i]);
-                  for (int j = 0; j <infos.Count; j++)
-                  {
-                      String name=infos[j].columnname;
-                      String type = infos[j].datatype+"";
-                      if (type == DataType.NUMBER+"")
-                      {
-                          type = "numeric";
-                      }
-                      Boolean nullable = infos[j].nullable;
-                      String pk=infos[j].PrimaryKeyName;
-                      if (j == infos.Count - 1)
-                      {
-                          if (pk != null)
-                          {
-                              cols += name + " " + type + " primary key";
-                          }
-                          else
-                          {
-                              cols += name + " " + type;
-                          } 
-                      }
-                      else
-                      {
-                          if (pk != null)
-                          {
-                              cols += name + " " + type + " primary key" + ", ";
-                          }
-                          else
-                          {
-                              cols += name + " " + type + ", ";
-                          }
-                      }
-
-                   //  MessageBox.Show(cols);
-                  }
-
-                  try
-                  {
-                      String insert = "Create Table " + tables[i] + "( " + cols + ");";
-                      CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                      cmd.ExecuteNonQuery();
-                      cols = "";
-                      erfolgreich = "Migration of MSSQL tables complete...";
-                  }
-                  catch (Exception e)
-                  {
-                      erfolgreich = "Migration of MSSQL tables failed...";  
-                  }
-
-                  //MessageBox.Show();
-              }
-          
-
-        }
 
         public String getErfolgreich()
         {
             return erfolgreich;
         }
     }
+
 }

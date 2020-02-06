@@ -348,9 +348,6 @@ namespace JRMigrator
         public void test()
         {
             cbDB1.Items.Add(DBType.CubridDB+"");
-            cbDB1.Items.Add(DBType.OracleSQL+"");
-            cbDB1.Items.Add(DBType.MSSQL+"");
-            cbDB2.Items.Add(DBType.CubridDB+"");
             cbDB2.Items.Add(DBType.OracleSQL+"");
             cbDB2.Items.Add(DBType.MSSQL+"");
             if (!cb1.Checked)
@@ -400,15 +397,7 @@ namespace JRMigrator
         {
             Class1 cs=new Class1();
 
-            if (cbDB1.GetItemText(cbDB2.SelectedItem) == "MSSQL")
-            {
-                cs.migrateMS();
-                taSummary.Text = cs.erfolgreich;
-            }
-            else
-            {
-                cs.migrateOS();
-            }
+           cs.migrate();
         }
 
         private System.Windows.Forms.TextBox tbPort1;
