@@ -66,7 +66,7 @@ namespace JRMigrator.DB
                 "FROM ALL_TAB_COLUMNS atc " +
                 "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON atc.table_name = acc.table_name AND atc.column_name = acc.column_name " +
                 "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
-                "WHERE atc.table_name = '"+tablename+"' AND atc.owner = USER; ";
+                "WHERE atc.table_name = '"+tablename+"' AND atc.owner = USER";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -80,13 +80,13 @@ namespace JRMigrator.DB
             while (reader.Read())
             {
                 column_name = reader.GetString(0);
-                is_nullable = reader.GetString(1) == "Y" ? true : false;
-                data_type = reader.GetString(2);
+                is_nullable = reader.GetString(2) == "Y" ? true : false;
+                data_type = reader.GetString(1);
                 try
                 {
                     isPrimaryKey = reader.GetString(3).Equals("P");
                 }
-                catch (System.Data.SqlTypes.SqlNullValueException)
+                catch (System.InvalidCastException e)
                 {
                     isPrimaryKey = false;
                 }
@@ -99,6 +99,7 @@ namespace JRMigrator.DB
 
         private DataType getDType(String data)
         {
+            data = data.ToLower();
             if (data == null)
             {
                 return DataType.NULL;
