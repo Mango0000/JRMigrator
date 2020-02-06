@@ -61,7 +61,8 @@ namespace JRMigrator.DB
             String column_name;
             Boolean is_nullable;
             String data_type;
-            String primary_key_name;
+            String constraint_name;
+            Boolean is_primary_key;
             DataType datatype;
             while (reader.Read())
             {
@@ -70,14 +71,17 @@ namespace JRMigrator.DB
                 data_type = reader.GetString(2);
                 try
                 {
-                    primary_key_name = reader.GetString(3);
+                    constraint_name = reader.GetString(3);
+                    is_primary_key = reader.GetString(4).Equals("PRIMARY KEY");
+
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
                 {
-                    primary_key_name = null;
+                    constraint_name = null;
+                    is_primary_key = false;
                 }
                 datatype = getDType(data_type);
-                tbinf.Add(new TableInfo(column_name, is_nullable, datatype, primary_key_name));
+                tbinf.Add(new TableInfo(column_name, is_nullable, datatype, constraint_name, is_primary_key));
             }
             reader.Close();
             return tbinf;
