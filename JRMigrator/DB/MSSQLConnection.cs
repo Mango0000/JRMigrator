@@ -1,6 +1,7 @@
 ﻿using JRMigrator.beans;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -86,6 +87,17 @@ namespace JRMigrator.DB
             }
             reader.Close();
             return tbinf;
+        }
+
+        public DataTable getDataFromTable(String tablename)
+        {
+            String sqlstring = "SELECT * " +
+                               "FROM "+tablename;
+            DataTable dtable = new DataTable();
+            sqlcommand = new SqlCommand(sqlstring, conn);
+            SqlDataAdapter adapter = new SqlDataAdapter(sqlcommand);
+            adapter.Fill(dtable);
+            return dtable;
         }
 
         private DataType getDType(String data)
