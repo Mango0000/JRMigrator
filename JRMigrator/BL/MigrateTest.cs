@@ -57,11 +57,11 @@ namespace JRMigrator.BL
                         {
                             if (!nullable)
                             {
-                                cols += name + " " + type + "not null";
+                                cols += name + " " + type + " not null";
                             }
                             else
                             {
-                                
+                                cols += name + " " + type;
                             }
                         }
                     }
@@ -75,7 +75,7 @@ namespace JRMigrator.BL
                         {
                             if (!nullable)
                             {
-                                cols += name + " " + type + "not null"+", ";
+                                cols += name + " " + type + " not null "+", ";
                             }
                             else
                             {
