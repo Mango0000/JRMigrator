@@ -62,11 +62,11 @@ namespace JRMigrator.DB
 
         public List<TableInfo> getInfo(String tablename)
         {
-            String sqlstring =  "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ac.constraint_type"+
-                                "FROM ALL_TAB_COLUMNS atc"+
-                                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON atc.table_name = acc.table_name AND atc.column_name = acc.column_name"+
-                                "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name"+
-                                "WHERE atc.table_name = '"+tablename+"' AND atc.owner = USER;";
+            String sqlstring =  "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ac.constraint_type "+
+                                "FROM ALL_TAB_COLUMNS atc "+
+                                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON atc.table_name = acc.table_name AND atc.column_name = acc.column_name "+
+                                "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name "+
+                                "WHERE atc.table_name = '"+tablename+"' AND atc.owner = USER; ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
