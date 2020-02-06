@@ -54,14 +54,17 @@ namespace JRMigrator.DB
 
         public List<TableInfo> getInfo(String tablename)
         {
-            String sqlstring = "SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_NAME, r.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN(SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME WHERE c.TABLE_NAME = '"+ tablename+"') r ON f.COLUMN_NAME = r.COLUMN_NAME WHERE f.TABLE_NAME = '"+ tablename+"'";
+            String sqlstring = "SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_TYPE " +
+                               "FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN(SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE " +
+                               "FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME " +
+                               "WHERE c.TABLE_NAME = '"+tablename+"' AND t.CONSTRAINT_TYPE = 'PRIMARY KEY') r ON f.COLUMN_NAME = r.COLUMN_NAME " +
+                               "WHERE f.TABLE_NAME = '"+tablename+"';";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             List<TableInfo> tbinf = new List<TableInfo>();
             String column_name;
             Boolean is_nullable;
             String data_type;
-            String constraint_name;
             Boolean is_primary_key;
             DataType datatype;
             while (reader.Read())
@@ -71,17 +74,15 @@ namespace JRMigrator.DB
                 data_type = reader.GetString(2);
                 try
                 {
-                    constraint_name = reader.GetString(3);
-                    is_primary_key = reader.GetString(4).Equals("PRIMARY KEY");
+                    is_primary_key = reader.GetString(3).Equals("PRIMARY KEY");
 
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
                 {
-                    constraint_name = null;
                     is_primary_key = false;
                 }
                 datatype = getDType(data_type);
-                tbinf.Add(new TableInfo(column_name, is_nullable, datatype, constraint_name, is_primary_key));
+                tbinf.Add(new TableInfo(column_name, is_nullable, datatype, is_primary_key));
             }
             reader.Close();
             return tbinf;
