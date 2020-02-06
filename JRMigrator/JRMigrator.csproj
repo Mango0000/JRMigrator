@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Reference Include="CUBRID.Data">
-      <HintPath>..\..\CUBRID.Data.dll</HintPath>
+      <HintPath>..\CUBRID.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
 

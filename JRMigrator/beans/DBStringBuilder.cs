@@ -7,7 +7,7 @@ namespace JRMigrator.beans
     public class DBStringBuilder
     {
         public DBType databasetype { get; set; }
-        public String ip { get; set; }
+        public String; }
         public String port { get; set; }
         public String databasename { get; set; }
         public String username { get; set; }
