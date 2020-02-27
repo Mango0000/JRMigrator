@@ -98,7 +98,7 @@ namespace JRMigrator.BL
                 catch (Exception e)
                 {
                     erfolgreich = "Migration of tables failed...";
-                    MessageBox.Show(e.Message);
+                    Console.Out.WriteLine(e.ToString());
                 }
 
             }
