@@ -18,5 +18,18 @@ namespace JRMigrator.beans
             this.datatype = datatype;
             this.isPrimaryKey = isPrimaryKey;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TableInfo info &&
+                   columnname == info.columnname &&
+                   nullable == info.nullable &&
+                   datatype == info.datatype;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(columnname, nullable, datatype);
+        }
     }
 }
