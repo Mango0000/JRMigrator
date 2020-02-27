@@ -29,7 +29,7 @@ namespace JRMigrator.BL
             for (int i = 0; i < tables.Count; i++)
             {
                 cols = "";
-                MessageBox.Show(cols);
+                //MessageBox.Show(cols);
                 if (ms == null)
                 {
                    
