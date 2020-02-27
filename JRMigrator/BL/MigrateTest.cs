@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using System.Windows.Forms;
 using CUBRID.Data.CUBRIDClient;
 using JRMigrator.beans;
@@ -27,9 +28,13 @@ namespace JRMigrator.BL
 
             for (int i = 0; i < tables.Count; i++)
             {
+                cols = "";
+                MessageBox.Show(cols);
                 if (ms == null)
                 {
+                   
                     infos = os.getInfo(tables[i]);
+                    
                 }
                 else
                 {
@@ -38,6 +43,7 @@ namespace JRMigrator.BL
 
                 for (int j = 0; j < infos.Count; j++)
                 {
+                   // MessageBox.Show(cols);
                     String name = infos[j].columnname;
                     String type = infos[j].datatype + "";
                     if (type == DataType.NUMBER + "")
@@ -91,7 +97,8 @@ namespace JRMigrator.BL
                 {
                     String insert = "Create Table " + tables[i] + "( " + cols + ");";
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                    cmd.ExecuteNonQuery();
+                  // MessageBox.Show(insert);
+                  cmd.ExecuteNonQuery();
                     cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
                 }

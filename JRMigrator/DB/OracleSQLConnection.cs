@@ -92,7 +92,7 @@ namespace JRMigrator.DB
                 }
                 datatype = getDType(data_type);
                 TableInfo ti = new TableInfo(column_name, is_nullable, datatype, isPrimaryKey);
-                if (tbinf.Contains(ti))
+                if (!tbinf.Contains(ti))
                 {
                     tbinf.Add(ti);
                 }
