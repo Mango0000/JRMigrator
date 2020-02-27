@@ -91,7 +91,11 @@ namespace JRMigrator.DB
                     isPrimaryKey = false;
                 }
                 datatype = getDType(data_type);
-                tbinf.Add(new TableInfo(column_name, is_nullable, datatype, isPrimaryKey));
+                TableInfo ti = new TableInfo(column_name, is_nullable, datatype, isPrimaryKey);
+                if (tbinf.Contains(ti))
+                {
+                    tbinf.Add(ti);
+                }
             }
             reader.Close();
             return tbinf;
