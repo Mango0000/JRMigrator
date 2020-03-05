@@ -109,7 +109,12 @@ namespace JRMigrator.DB
             else if (data.Equals("varchar"))
             {
                 return DataType.VARCHAR;
-            }else if (data.Equals("int"))
+            }
+            else if (data.Equals("varchar2"))
+            {
+                return DataType.VARCHAR;
+            }
+            else if (data.Equals("int"))
             {
                 return DataType.NUMBER;
             }else if (data.Equals("char"))
