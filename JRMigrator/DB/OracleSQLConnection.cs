@@ -62,11 +62,13 @@ namespace JRMigrator.DB
 
         public List<TableInfo> getInfo(String tablename)
         {
-            String sqlstring = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ac.constraint_type " +
-                "FROM ALL_TAB_COLUMNS atc " +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON atc.table_name = acc.table_name AND atc.column_name = acc.column_name " +
+            String sqlstring = "SELECT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
+            "FROM ALL_TAB_COLUMNS atc " +
+            "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
+                "FROM ALL_CONS_COLUMNS acc " +
                 "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
-                "WHERE atc.table_name = '"+tablename+"' AND atc.owner = USER";
+                "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
+            "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -92,10 +94,7 @@ namespace JRMigrator.DB
                 }
                 datatype = getDType(data_type);
                 TableInfo ti = new TableInfo(column_name, is_nullable, datatype, isPrimaryKey);
-                if (!tbinf.Contains(ti))
-                {
-                    tbinf.Add(ti);
-                }
+                tbinf.Add(ti);
             }
             reader.Close();
             return tbinf;
