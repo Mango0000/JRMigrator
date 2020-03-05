@@ -13,7 +13,7 @@ namespace JRMigrator.BL
         private List<String> tables;
         private String erfolgreich;
         private List<TableInfo> infos;
-
+        private String pks = "";
         public void migrateTables(OracleSQLConnection os,MSSQLConnection ms, CUBRIDConnection cs)
         {
             String cols = "";
@@ -53,41 +53,24 @@ namespace JRMigrator.BL
 
                     Boolean nullable = infos[j].nullable;
                     Boolean pk = infos[j].isPrimaryKey;
-                    if (j == infos.Count - 1)
-                    {
+                    
+                    
                         if (pk)
                         {
-                            cols += name + " " + type + " primary key";
+                            pks += name + ",";
+                            cols += name + " " + type + ",";
                         }
                         else
                         {
                             if (!nullable)
                             {
-                                cols += name + " " + type + " not null";
-                            }
-                            else
-                            {
-                                cols += name + " " + type;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pk)
-                        {
-                            cols += name + " " + type + " primary key" + ", ";
-                        }
-                        else
-                        {
-                            if (!nullable)
-                            {
-                                cols += name + " " + type + " not null "+", ";
+                                cols += name + " " + type + " not null "+",";
                             }
                             else
                             {
                                 cols += name + " " + type+",";
                             }
-                        }
+                        
                     }
 
                     //  MessageBox.Show(cols);
@@ -95,8 +78,20 @@ namespace JRMigrator.BL
 
                 try
                 {
-                    String insert = "Create Table " + tables[i] + "( " + cols + ");";
+                    String insert="";
+                    if (pks.Length == 0)
+                    {
+                       insert  = "Create Table " + tables[i] + "( " + cols.Substring(0,cols.Length-1)+ ");";
+                      // MessageBox.Show(insert);
+                    }
+                    if (pks.Length >0)
+                    {
+                        insert  = "Create Table " + tables[i] + "( " + cols + "Primary key (" +
+                                  pks.Substring(0, pks.Length - 1) + ")" + ");";
+                    }
+                    
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                    pks = "";
                   // MessageBox.Show(insert);
                   cmd.ExecuteNonQuery();
                     cols = "";

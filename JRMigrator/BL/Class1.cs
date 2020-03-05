@@ -84,6 +84,9 @@ namespace JRMigrator.BL
         public void migrate()
         {
             mt.migrateTables(os,ms,cs);
+            os = null;
+            ms = null;
+            cs = null;
         }
 
     }
