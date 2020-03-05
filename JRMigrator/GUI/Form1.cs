@@ -67,9 +67,14 @@ namespace JRMigrator
 
         private void daten_Click(object sender, EventArgs e)
         {
-            if (DB1tested == 0 && DB2tested == 0)
+            if (DB1tested == 0)
             {
                 callDB1();
+                
+            }
+
+            if ( DB2tested == 0)
+            {
                 callDB2();
             }
 
