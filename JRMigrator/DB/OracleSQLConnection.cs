@@ -112,6 +112,42 @@ namespace JRMigrator.DB
             return dtable;
         }
 
+        public List<ConstraintInfo> getConstraintsFromTable(String tablename)
+        {
+            List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
+
+            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name" +
+                "FROM ALL_CONSTRAINTS ac" +
+                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.constraint_name = acc.constraint_name" +
+                "WHERE ac.owner = user" +
+                "AND ac.table_name = '"+tablename+"'" +
+                "AND ac.constraint_type <> 'P'; ";
+
+            OracleCommand omd = new OracleCommand(sqlstring, conn);
+            OracleDataReader reader = omd.ExecuteReader();
+
+            String constraint_name;
+            String constraint_type;
+            String condition;
+            String column_name;
+            
+
+            DataType datatype;
+            while (reader.Read())
+            {
+                constraint_name = reader.GetString(0);
+                constraint_type = reader.GetString(1);
+                condition = reader.GetString(2);
+                column_name = reader.GetString(3);
+
+                ConstraintInfo ci = new ConstraintInfo(constraint_type, constraint_name, condition, column_name);
+                tbinf.Add(ti);
+            }
+            reader.Close();
+
+            return listInfo;
+        }
+
         private DataType getDType(String data)
         {
             data = data.ToLower();
