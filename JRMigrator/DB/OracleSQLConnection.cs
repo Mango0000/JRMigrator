@@ -2,6 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text;
 
@@ -98,6 +99,17 @@ namespace JRMigrator.DB
             }
             reader.Close();
             return tbinf;
+        }
+
+        public DataTable getDataFromTable(String tablename)
+        {
+            String sqlstring = "SELECT * " +
+                               "FROM " + tablename;
+            DataTable dtable = new DataTable();
+            OracleCommand orcCommand = new OracleCommand(sqlstring, conn);
+            OracleDataAdapter adapter = new OracleDataAdapter(orcCommand);
+            adapter.Fill(dtable);
+            return dtable;
         }
 
         private DataType getDType(String data)
