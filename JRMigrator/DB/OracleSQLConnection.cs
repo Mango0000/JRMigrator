@@ -2,6 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Text;
 
@@ -62,7 +63,7 @@ namespace JRMigrator.DB
 
         public List<TableInfo> getInfo(String tablename)
         {
-            String sqlstring = "SELECT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
+            String sqlstring = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
             "FROM ALL_TAB_COLUMNS atc " +
             "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
                 "FROM ALL_CONS_COLUMNS acc " +
@@ -98,6 +99,17 @@ namespace JRMigrator.DB
             }
             reader.Close();
             return tbinf;
+        }
+
+        public DataTable getDataFromTable(String tablename)
+        {
+            String sqlstring = "SELECT * " +
+                               "FROM " + tablename;
+            DataTable dtable = new DataTable();
+            OracleCommand orcCommand = new OracleCommand(sqlstring, conn);
+            OracleDataAdapter adapter = new OracleDataAdapter(orcCommand);
+            adapter.Fill(dtable);
+            return dtable;
         }
 
         private DataType getDType(String data)
