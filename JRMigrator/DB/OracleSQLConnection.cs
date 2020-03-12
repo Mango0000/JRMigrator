@@ -125,11 +125,11 @@ namespace JRMigrator.DB
             }
             else if (data.Equals("datetime"))
             {
-                return DataType.DATETIME;
+                return DataType.DATE;
             }
             else if (data.Equals("date"))
             {
-                return DataType.DATETIME;
+                return DataType.DATE;
             }
             else if (data.Equals("number"))
             {

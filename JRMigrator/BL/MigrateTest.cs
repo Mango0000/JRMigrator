@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Security.AccessControl;
 using System.Windows.Forms;
 using CUBRID.Data.CUBRIDClient;
@@ -14,6 +15,8 @@ namespace JRMigrator.BL
         private String erfolgreich;
         private List<TableInfo> infos;
         private String pks = "";
+        private DataTable dt=new DataTable();
+        private LinkedList<DataRow> row;
         public void migrateTables(OracleSQLConnection os,MSSQLConnection ms, CUBRIDConnection cs)
         {
             String cols = "";
@@ -91,9 +94,11 @@ namespace JRMigrator.BL
                     }
                     
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                    pks = "";
+                    
                   // MessageBox.Show(insert);
-                  cmd.ExecuteNonQuery();
+               cmd.ExecuteNonQuery();
+                  gettableData(tables[i],ms,cs);
+                  pks = "";
                     cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
                 }
@@ -104,6 +109,60 @@ namespace JRMigrator.BL
                 }
 
             }
+        }
+        public  void gettableData(String tablename,MSSQLConnection ms,CUBRIDConnection cs)
+        {
+            String data = "";
+            dt=ms.getDataFromTable(tablename);
+            foreach (DataRow row in dt.Rows)
+            {
+                Object[] array = row.ItemArray;
+                for (int i = 0; i <array.Length; i++)
+                {
+                    if ((array[i].GetType() + "").Contains("Date"))
+                    {
+                        
+                        data += "to_date("+"'" + (array[i]+"").Substring(0,10)+"'"+","+"'dd.mm.yyyy'"+")"+",";
+                    }
+
+                   else if ((array[i].GetType() + "").Contains("String"))
+                    {
+                        data += "'" + array[i]+"'"+",";  
+                    }
+                    else
+                    {
+                        
+                            if ((array[i]+"").Equals(""))
+                            {
+                                data += "null,";
+                            }
+                        
+                        
+                        else
+                        {
+                            if ((array[i] + "").Contains(","))
+                            {
+                                array[i] = (array[i] + "").Replace(",", ".");
+                            }
+                            data += array[i] + ",";
+                        }
+                    }
+                  
+                    
+                }
+                data=data.Substring(0, data.Length - 1);
+                String insert = "Insert into " + tablename + " Values(" + data + ")";
+                MessageBox.Show(insert);
+                CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                cmd.ExecuteNonQuery();
+               
+                data="";
+                 
+
+            }
+
+           
+            //String insert = "Insert into " + tablename + " Values(" + ")";
         }
 
 

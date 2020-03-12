@@ -116,9 +116,9 @@ namespace JRMigrator.DB
             {
                 return DataType.CHAR;
             }
-            else if (data.Equals("datetime"))
+            else if (data.Equals("date"))
             {
-                return DataType.DATETIME;
+                return DataType.DATE;
             }else if (data.Equals("numeric"))
             {
                 return DataType.NUMBER;

@@ -9,7 +9,7 @@ namespace JRMigrator.beans
         CHAR,
         VARCHAR,
         NUMBER,
-        DATETIME,
+        DATE,
         NULL
     }
 }
