@@ -100,7 +100,12 @@ namespace JRMigrator.DB
             return dtable;
         }
 
-        private DataType getDType(String data)
+        public List<ConstraintInfo> getConstraintsFromTable(string tablename)
+        {
+            return new List<beans.ConstraintInfo>();
+        }
+
+            private DataType getDType(String data)
         {
             if (data == null)
             {
