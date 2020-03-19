@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Text;
+using System.Windows.Forms;
 
 namespace JRMigrator.DB
 {
     public class OracleSQLConnection
     {
         private static OracleSQLConnection theInstance = null;
+        private String colnames = "";
         public DBStringBuilder connectionString { get; set; } = null;
         private OracleConnection conn = null;
 
@@ -83,6 +85,7 @@ namespace JRMigrator.DB
             while (reader.Read())
             {
                 column_name = reader.GetString(0);
+                colnames += column_name + ",";
                 is_nullable = reader.GetString(2) == "Y" ? true : false;
                 data_type = reader.GetString(1);
                 try
@@ -103,12 +106,15 @@ namespace JRMigrator.DB
 
         public DataTable getDataFromTable(String tablename)
         {
-            String sqlstring = "SELECT * " +
-                               "FROM " + tablename;
+            
+            String sqlstring = "SELECT " +colnames.Substring(0,colnames.Length-1)+
+                               " FROM " + tablename;
+          //  MessageBox.Show(sqlstring);
             DataTable dtable = new DataTable();
             OracleCommand orcCommand = new OracleCommand(sqlstring, conn);
             OracleDataAdapter adapter = new OracleDataAdapter(orcCommand);
             adapter.Fill(dtable);
+            colnames = "";
             return dtable;
         }
 
