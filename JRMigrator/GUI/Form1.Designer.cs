@@ -151,7 +151,7 @@ namespace JRMigrator
             this.tbAdr1.Name = "tbAdr1";
             this.tbAdr1.Size = new System.Drawing.Size(115, 23);
             this.tbAdr1.TabIndex = 5;
-            this.tbAdr1.Text = "10.151.84.243";
+            this.tbAdr1.Text = "192.168.1.182";
             this.tbPw1.Location = new System.Drawing.Point(100, 165);
             this.tbPw1.Name = "tbPw1";
             this.tbPw1.Size = new System.Drawing.Size(115, 23);

@@ -53,7 +53,6 @@ namespace JRMigrator.BL
                     {
                         type = "numeric";
                     }
-
                     Boolean nullable = infos[j].nullable;
                     Boolean pk = infos[j].isPrimaryKey;
                     
@@ -89,17 +88,15 @@ namespace JRMigrator.BL
                     }
                     if (pks.Length >0)
                     {
-                        insert  = "Create Table " + tables[i] + "( " + cols + "Primary key (" +
+                        insert  = "Create Table " + tables[i] + "( " +  cols+"Primary key (" +
                                   pks.Substring(0, pks.Length - 1) + ")" + ");";
                     }
                     
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                    
-                  // MessageBox.Show(insert);
-               cmd.ExecuteNonQuery();
-                  gettableData(tables[i],ms,cs);
+                    cmd.ExecuteNonQuery();
+                 gettableData(tables[i],ms,os,cs);
                   pks = "";
-                    cols = "";
+                  cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
                 }
                 catch (Exception e)
@@ -110,15 +107,24 @@ namespace JRMigrator.BL
 
             }
         }
-        public  void gettableData(String tablename,MSSQLConnection ms,CUBRIDConnection cs)
+        public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
             String data = "";
-            dt=ms.getDataFromTable(tablename);
+            if (os == null)
+            {
+                dt = ms.getDataFromTable(tablename);
+            }
+            else
+            {
+                dt = os.getDataFromTable(tablename); 
+            }
+
             foreach (DataRow row in dt.Rows)
             {
                 Object[] array = row.ItemArray;
                 for (int i = 0; i <array.Length; i++)
                 {
+                 //   MessageBox.Show(array[i].GetType()+"");
                     if ((array[i].GetType() + "").Contains("Date"))
                     {
                         
@@ -152,7 +158,6 @@ namespace JRMigrator.BL
                 }
                 data=data.Substring(0, data.Length - 1);
                 String insert = "Insert into " + tablename + " Values(" + data + ")";
-                MessageBox.Show(insert);
                 CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                 cmd.ExecuteNonQuery();
                
