@@ -11,5 +11,13 @@ namespace JRMigrator.beans
         public String Condition { get; set; }
         public String columnName { get; set; }
 
+        public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName)
+        {
+            this.constraintType = constraintType;
+            this.constraintName = constraintName;
+            this.Condition = Condition;
+            this.columnName = columnName;
+        }
+
     }
 }
