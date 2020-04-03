@@ -57,17 +57,26 @@ namespace JRMigrator.BL
             }
             catch (Exception e)
             {
-                if (e.Message.Contains("USER") || e.Message.Contains("user"))
+                if (e.Message.Contains("Failed to connect to"))
                 {
-                    MessageBox.Show("Invalid Username");
+                    MessageBox.Show("Invalid Databasename");
                 }
-                if (e.Message.Contains("PASSWORD") || e.Message.Contains("password"))
+              else  if (e.Message.Contains("Cannot connect to"))
+                {
+                    MessageBox.Show("Invalid port or address");
+                }
+               else if (e.Message.Contains("password"))
                 {
                     MessageBox.Show("Invalid password");
                 }
+              else  if (e.Message.Contains("User"))
+                {
+                    MessageBox.Show("Invalid username");
+                }
+
                 else
                 {
-                    MessageBox.Show("Invalid Port or Address");
+                    MessageBox.Show("An unexpected error occured");
                     MessageBox.Show(e.ToString());
                 }
             }

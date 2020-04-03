@@ -58,7 +58,24 @@ namespace JRMigrator
               
             }
         }
+        private void defaultValues(object sender, EventArgs e)
+        {
+            if (cbDB2.SelectedItem.Equals("OracleSQL"))
+            {
+                tbdatabasename2.Text = "";
+                tbAdr2.Text = "db2.htl-kaindorf.at";
+                tbPort2.Text = "1521";
+                tbUser2.Text = "prisad16";
+                tbPw2.Text = "prisad16";
 
+            }else{
+                tbdatabasename2.Text = "";
+                tbAdr2.Text = "database-1.cv7tgdkqwuzd.eu-west-1.rds.amazonaws.com";
+                tbPort2.Text = "1433";
+                tbUser2.Text = "admin";
+                tbPw2.Text = "migrate01";  
+        }
+        }
         private void bt2_Click(object sender, EventArgs e)
         {
             DB2tested = 1;

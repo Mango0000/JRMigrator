@@ -350,6 +350,7 @@ namespace JRMigrator
             cbDB1.Items.Add(DBType.CubridDB+"");
             cbDB2.Items.Add(DBType.OracleSQL+"");
             cbDB2.Items.Add(DBType.MSSQL+"");
+            cbDB2.SelectedIndexChanged+=defaultValues;
             if (!cb1.Checked)
             {
                 tbPw1.PasswordChar = '*';
@@ -369,6 +370,7 @@ namespace JRMigrator
             int type = 0;
             if (compare.Equals(DBType.CubridDB+""))
             {
+                
                 type = 1;
             }
             Class1.start(tbAdr1.Text, tbPort1.Text, tbdatabasename1.Text, tbUser1.Text, tbPw1.Text,type);

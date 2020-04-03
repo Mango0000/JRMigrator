@@ -146,8 +146,8 @@ namespace JRMigrator.DB
                 condition = reader.GetString(2);
                 column_name = reader.GetString(3);
 
-                ConstraintInfo ci = new ConstraintInfo(constraint_type, constraint_name, condition, column_name);
-                tbinf.Add(ti);
+             //   ConstraintInfo ci = new ConstraintInfo(constraint_type, constraint_name, condition, column_name);
+              //  tbinf.Add(ti);
             }
             reader.Close();
 
