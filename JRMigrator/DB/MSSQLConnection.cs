@@ -102,7 +102,33 @@ namespace JRMigrator.DB
 
         public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
-            return new List<beans.ConstraintInfo>();
+            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, COLUMN_NAME"+
+            "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME"+
+            "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME"+
+            "WHERE tc.TABLE_NAME = '"+tablename+"' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
+            sqlcommand = new SqlCommand(sqlstring, conn);
+            SqlDataReader reader = sqlcommand.ExecuteReader();
+            String column_name;
+            String constraint_name;
+            String condition;
+            String type;
+            List<ConstraintInfo> constraints = new List<ConstraintInfo>();
+            while (reader.Read())
+            {
+                type = reader.GetString(1);
+                if (type.Equals("FOREIGN KEY"))
+                {
+                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), null, reader.GetString(3)));
+                }else if(type.Equals("UNIQUE"))
+                {
+                    constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), null, reader.GetString(3)));
+                }
+                else if (type.Equals("CHECK"))
+                {
+                    constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3)));
+                }
+            }
+            return new List<ConstraintInfo>();
         }
 
             private DataType getDType(String data)
