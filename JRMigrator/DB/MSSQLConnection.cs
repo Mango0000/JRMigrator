@@ -107,7 +107,7 @@ namespace JRMigrator.DB
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME"+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME"+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.CONSTRAINT_NAME = tc2.CONSTRAINT_NAME"+
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME" +
                                 "WHERE tc.TABLE_NAME = 'employee' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
