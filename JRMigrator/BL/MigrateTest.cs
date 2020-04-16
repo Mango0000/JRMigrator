@@ -57,6 +57,15 @@ namespace JRMigrator.BL
                                           " references " + constraints[j].tableName+ "("+ constraints[j].columnNameConstraint+");\n";
                             altertablestatement += stat;
                           
+                        }else if((constraints[j].constraintType+"").Contains("Unique"))
+                        {
+                            String stat = "Alter table " + tables[i] + " add unique(" + constraints[j].columnName + ");"; 
+                            altertablestatement += stat;  
+                        }
+                        else
+                        {
+                            String stat = "Alter table " + tables[i] + " add check( " + constraints[j].columnName +constraints[j].Condition+ ");"; 
+                            altertablestatement += stat;  
                         }
                     }
                 }
@@ -108,10 +117,7 @@ namespace JRMigrator.BL
                         insert  += "Create Table " + tables[i] + "( " +  cols+"Primary key (" +
                                   pks.Substring(0, pks.Length - 1) + ")" + ");\n";
                     }
-
-                  //  MessageBox.Show(insert+altertablestatement);
-                    // gettableData(tables[i],ms,os,cs);
-                  pks = "";
+                    pks = "";
                   cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
                 }
@@ -122,8 +128,14 @@ namespace JRMigrator.BL
                 }
 
             }
-            CUBRIDCommand cmd = new CUBRIDCommand(insert+altertablestatement, cs);
+            CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
             cmd.ExecuteNonQuery();
+            for (int i = 0; i < tables.Count; i++)
+            {
+                gettableData(tables[i],ms,os,cs);
+            }
+            CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+            cmd2.ExecuteNonQuery();
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
