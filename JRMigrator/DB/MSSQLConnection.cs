@@ -102,13 +102,14 @@ namespace JRMigrator.DB
 
         public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
-            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, COLUMN_NAME, tc2.TABLE_NAME"+
+            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME" +
                                 "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc"+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME"+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME"+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.CONSTRAINT_NAME = tc2.CONSTRAINT_NAME"+
-                                "WHERE tc.TABLE_NAME = 'employee' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME" +
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME"+
+                                "WHERE tc.TABLE_NAME = '"+tablename+"' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             String column_name;
@@ -121,7 +122,7 @@ namespace JRMigrator.DB
                 type = reader.GetString(1);
                 if (type.Equals("FOREIGN KEY"))
                 {
-                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), null, reader.GetString(3), reader.GetString(4)));
+                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), null, reader.GetString(3), reader.GetString(4), reader.GetString(5)));
                 }else if(type.Equals("UNIQUE"))
                 {
                     constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), null, reader.GetString(3)));
