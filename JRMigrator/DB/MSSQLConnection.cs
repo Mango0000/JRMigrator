@@ -102,13 +102,13 @@ namespace JRMigrator.DB
 
         public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
-            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME" +
-                                "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME"+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME" +
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME"+
+            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
+                                "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc "+
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME "+
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME "+
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME "+
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME " +
+                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME "+
                                 "WHERE tc.TABLE_NAME = '"+tablename+"' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
@@ -132,7 +132,9 @@ namespace JRMigrator.DB
                     constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3)));
                 }
             }
-            return new List<ConstraintInfo>();
+            reader.Close();
+            return constraints;
+            
         }
 
             private DataType getDType(String data)
@@ -160,6 +162,10 @@ namespace JRMigrator.DB
             {
                 return DataType.DATE;
             }else if (data.Equals("numeric"))
+            {
+                return DataType.NUMBER;
+            }
+            else if (data.Equals("decimal"))
             {
                 return DataType.NUMBER;
             }

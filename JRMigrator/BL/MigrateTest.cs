@@ -15,8 +15,11 @@ namespace JRMigrator.BL
         private String erfolgreich;
         private List<TableInfo> infos;
         private String pks = "";
+        private String insert = "";
         private DataTable dt=new DataTable();
         private LinkedList<DataRow> row;
+        private String altertablestatement = "";
+        private List<ConstraintInfo> constraints;
         public void migrateTables(OracleSQLConnection os,MSSQLConnection ms, CUBRIDConnection cs)
         {
             String cols = "";
@@ -26,7 +29,7 @@ namespace JRMigrator.BL
             }
             else
             {
-                tables = ms.getTables();  
+                tables = ms.getTables();
             }
 
             for (int i = 0; i < tables.Count; i++)
@@ -41,7 +44,21 @@ namespace JRMigrator.BL
                 }
                 else
                 {
-                    infos = ms.getInfo(tables[i]);  
+                    infos = ms.getInfo(tables[i]);
+                    constraints = ms.getConstraintsFromTable(tables[i]);
+                    
+                    for (int j = 0; j < constraints.Count; j++)
+                    {
+                        if ((constraints[j].constraintType+"").Equals("ForeignKey"))
+                        {
+                            
+                            String stat = "Alter table " + tables[i] + " add foreign key(" + constraints[j].columnName +
+                                          ")" +
+                                          " references " + constraints[j].tableName+ "("+ constraints[j].columnNameConstraint+");\n";
+                            altertablestatement += stat;
+                          
+                        }
+                    }
                 }
 
                 for (int j = 0; j < infos.Count; j++)
@@ -80,21 +97,20 @@ namespace JRMigrator.BL
 
                 try
                 {
-                    String insert="";
+               
                     if (pks.Length == 0)
                     {
-                       insert  = "Create Table " + tables[i] + "( " + cols.Substring(0,cols.Length-1)+ ");";
-                      // MessageBox.Show(insert);
+                       insert  += "Create Table " + tables[i] + "( " + cols.Substring(0,cols.Length-1)+ ");\n";
+                       
                     }
                     if (pks.Length >0)
                     {
-                        insert  = "Create Table " + tables[i] + "( " +  cols+"Primary key (" +
-                                  pks.Substring(0, pks.Length - 1) + ")" + ");";
+                        insert  += "Create Table " + tables[i] + "( " +  cols+"Primary key (" +
+                                  pks.Substring(0, pks.Length - 1) + ")" + ");\n";
                     }
-                    
-                    CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                    cmd.ExecuteNonQuery();
-                 gettableData(tables[i],ms,os,cs);
+
+                  //  MessageBox.Show(insert+altertablestatement);
+                    // gettableData(tables[i],ms,os,cs);
                   pks = "";
                   cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
@@ -106,6 +122,8 @@ namespace JRMigrator.BL
                 }
 
             }
+            CUBRIDCommand cmd = new CUBRIDCommand(insert+altertablestatement, cs);
+            cmd.ExecuteNonQuery();
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
