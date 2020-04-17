@@ -110,6 +110,7 @@ namespace JRMigrator.DB
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME " +
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME "+
                                 "WHERE tc.TABLE_NAME = '"+tablename+"' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
+
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             String column_name;

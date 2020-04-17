@@ -133,21 +133,32 @@ namespace JRMigrator.DB
             OracleDataReader reader = omd.ExecuteReader();
 
             String constraint_name;
-            String constraint_type;
+            String ct_type;
             String condition;
             String column_name;
-            
 
             DataType datatype;
+
             while (reader.Read())
             {
                 constraint_name = reader.GetString(0);
-                constraint_type = reader.GetString(1);
+                ct_type = reader.GetString(1);
                 condition = reader.GetString(2);
                 column_name = reader.GetString(3);
 
-             //   ConstraintInfo ci = new ConstraintInfo(constraint_type, constraint_name, condition, column_name);
-              //  tbinf.Add(ti);
+                if (ct_type.Equals("U"))
+                {
+                    listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name));
+                }
+                else if(ct_type.Equals("R"))
+                {
+                    listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name));
+                }
+                else if(ct_type.Equals("C"))
+                {
+                    listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name));
+                }
+
             }
             reader.Close();
 
