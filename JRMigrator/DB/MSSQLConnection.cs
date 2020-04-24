@@ -120,17 +120,25 @@ namespace JRMigrator.DB
             List<ConstraintInfo> constraints = new List<ConstraintInfo>();
             while (reader.Read())
             {
-                type = reader.GetString(1);
-                if (type.Equals("FOREIGN KEY"))
+                try
                 {
-                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), null, reader.GetString(3), reader.GetString(4), reader.GetString(5)));
-                }else if(type.Equals("UNIQUE"))
-                {
-                    constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), null, reader.GetString(3)));
+                    type = reader.GetString(1);
+                    if (type.Equals("FOREIGN KEY"))
+                    {
+                        constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), null, reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                    }
+                    else if (type.Equals("UNIQUE"))
+                    {
+                        constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), null, reader.GetString(3)));
+                    }
+                    else if (type.Equals("CHECK"))
+                    {
+                        constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3)));
+                    }
                 }
-                else if (type.Equals("CHECK"))
+                catch (System.Data.SqlTypes.SqlNullValueException)
                 {
-                    constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3)));
+                    break;
                 }
             }
             reader.Close();
