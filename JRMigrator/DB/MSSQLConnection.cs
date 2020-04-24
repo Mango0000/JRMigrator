@@ -118,6 +118,7 @@ namespace JRMigrator.DB
             String condition;
             String type;
             List<ConstraintInfo> constraints = new List<ConstraintInfo>();
+
             while (reader.Read())
             {
                 try
