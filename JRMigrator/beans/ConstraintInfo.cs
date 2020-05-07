@@ -10,8 +10,8 @@ namespace JRMigrator.beans
         public String constraintName { get; set; }
         public String Condition { get; set; }
         public String columnName { get; set; }
-        public String columnNameConstraint { get; set; }
-        public String tableName { get; set; }
+        public String FKcolumnName { get; set; }
+        public String FKtableName { get; set; }
 
         public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName)
         {
@@ -21,14 +21,14 @@ namespace JRMigrator.beans
             this.columnName = columnName;
         }
 
-        public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName, String tableName, String columnNameConstraint)
+        public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName, String FKtableName, String FKConstraint)
         {
             this.constraintType = constraintType;
             this.constraintName = constraintName;
             this.Condition = Condition;
             this.columnName = columnName;
-            this.tableName = tableName;
-            this.columnNameConstraint = columnNameConstraint;
+            this.FKtableName = FKtableName;
+            this.FKcolumnName = FKcolumnName;
         }
 
     }
