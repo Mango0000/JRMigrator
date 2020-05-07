@@ -100,7 +100,22 @@ namespace JRMigrator.DB
             return dtable;
         }
 
-        public List<ConstraintInfo> getConstraintsFromTable(string tablename)
+        public List<String> getViews()
+        {
+            String sqlstring = "SELECT VIEW_DEFINITION" +
+                               "FROM INFORMATION_SCHEMA.VIEWS; ";
+            sqlcommand = new SqlCommand(sqlstring, conn);
+            SqlDataReader reader = sqlcommand.ExecuteReader();
+            List<String> views = new List<String>();
+            while (reader.Read())
+            {
+                views.Add(reader.GetString(0));
+            }
+            reader.Close();
+            return views;
+        }
+
+            public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
             String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
                                 "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc "+
