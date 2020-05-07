@@ -141,7 +141,7 @@ namespace JRMigrator.DB
                     type = reader.GetString(1);
                     if (type.Equals("FOREIGN KEY"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), reader.GetString(3), "", reader.GetString(4), reader.GetString(5)));
+                        constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
                     }
                     else if (type.Equals("UNIQUE"))
                     {

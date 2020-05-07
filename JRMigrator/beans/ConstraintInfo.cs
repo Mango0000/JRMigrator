@@ -21,7 +21,7 @@ namespace JRMigrator.beans
             this.columnName = columnName;
         }
 
-        public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName, String FKtableName, String FKConstraint)
+        public ConstraintInfo(ConstraintType constraintType, String constraintName, String Condition, String columnName, String FKtableName, String FKcolumnName)
         {
             this.constraintType = constraintType;
             this.constraintName = constraintName;
