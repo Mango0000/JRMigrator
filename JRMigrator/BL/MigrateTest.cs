@@ -54,7 +54,7 @@ namespace JRMigrator.BL
                             
                             String stat = "Alter table " + tables[i] + " add foreign key(" + constraints[j].columnName +
                                           ")" +
-                                          " references " + constraints[j].tableName+ "("+ constraints[j].columnNameConstraint+");\n";
+                                          " references " + constraints[j].FKtableName+ "("+ constraints[j].FKcolumnName+");\n";
                             altertablestatement += stat;
                           
                         }else if((constraints[j].constraintType+"").Contains("Unique"))
