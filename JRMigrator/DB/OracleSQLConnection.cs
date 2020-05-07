@@ -122,12 +122,13 @@ namespace JRMigrator.DB
         {
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
-            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name" +
+            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.table_name, acc.column_name, cca.table_name AS FK_TABLE_NAME, acc.column_name AS FK_COLUMN_NAME" +
                 "FROM ALL_CONSTRAINTS ac" +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.constraint_name = acc.constraint_name" +
-                "WHERE ac.owner = user" +
-                "AND ac.table_name = '"+tablename+"'" +
-                "AND ac.constraint_type <> 'P'; ";
+                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
+                "LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
+                "WHERE ac.OWNER = USER" +
+                "AND ac.TABLE_NAME = '"+tablename+"'" +
+                "AND CONSTRAINT_TYPE<> 'P'; ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -136,6 +137,8 @@ namespace JRMigrator.DB
             String ct_type;
             String condition;
             String column_name;
+            String FKtable_name;
+            String FKcolumn_name;
 
             DataType datatype;
 
@@ -145,6 +148,8 @@ namespace JRMigrator.DB
                 ct_type = reader.GetString(1);
                 condition = reader.GetString(2);
                 column_name = reader.GetString(3);
+                FKtable_name = reader.GetString(4);
+                FKcolumn_name = reader.GetString(5);
 
                 if (ct_type.Equals("U"))
                 {
@@ -152,7 +157,7 @@ namespace JRMigrator.DB
                 }
                 else if(ct_type.Equals("R"))
                 {
-                    listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name));
+                    listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name, FKtable_name, FKcolumn_name));
                 }
                 else if(ct_type.Equals("C"))
                 {
