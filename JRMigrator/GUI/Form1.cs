@@ -70,10 +70,10 @@ namespace JRMigrator
 
             }else{
                 tbdatabasename2.Text = "";
-                tbAdr2.Text = "database-1.cv7tgdkqwuzd.eu-west-1.rds.amazonaws.com";
+                tbAdr2.Text = "84.115.153.150";
                 tbPort2.Text = "1433";
-                tbUser2.Text = "admin";
-                tbPw2.Text = "migrate01";  
+                tbUser2.Text = "SA";
+                tbPw2.Text = "Migrate01";  
         }
         }
         private void bt2_Click(object sender, EventArgs e)

@@ -164,37 +164,27 @@ namespace JRMigrator.DB
 
             private DataType getDType(String data)
         {
-            if (data == null)
+
+            switch (data)
             {
-                return DataType.NULL;
+               case "varchar": return DataType.VARCHAR;
+               case "varchar2": return DataType.VARCHAR;
+               case "datetime": return DataType.DATETIME;
+               case "date": return DataType.DATE;
+               case "text": return DataType.VARCHAR;
+               case "int": return DataType.INT;
+               case "char": return DataType.CHAR;
+               case "float": return DataType.NUMERIC;
+               case "nvarchar": return DataType.VARCHAR;
+               case "smallint": return DataType.SMALLINT;
+               case "numeric": return DataType.NUMERIC;
+               case "decimal": return DataType.DECIMAL;
+               case "real": return DataType.NUMERIC;
+               default: return DataType.NULL;
             }
-            else if (data.Equals("varchar"))
-            {
-                return DataType.VARCHAR;
-            }
-            else if (data.Equals("varchar2"))
-            {
-                return DataType.VARCHAR;
-            }
-            else if (data.Equals("int"))
-            {
-                return DataType.NUMBER;
-            }else if (data.Equals("char"))
-            {
-                return DataType.CHAR;
-            }
-            else if (data.Equals("date"))
-            {
-                return DataType.DATE;
-            }else if (data.Equals("numeric"))
-            {
-                return DataType.NUMBER;
-            }
-            else if (data.Equals("decimal"))
-            {
-                return DataType.NUMBER;
-            }
-            return DataType.NULL;
+           
+            
+          
         }
 
         private static void test()

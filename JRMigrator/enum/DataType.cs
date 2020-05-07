@@ -8,8 +8,15 @@ namespace JRMigrator.beans
     {
         CHAR,
         VARCHAR,
+        VARCHAR2,
+        INT,
         NUMBER,
+        NUMERIC,
+        DECIMAL,
         DATE,
+        DATETIME,
+        SMALLINT,
+        TEXT,
         NULL
     }
 }

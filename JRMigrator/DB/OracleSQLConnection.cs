@@ -66,12 +66,12 @@ namespace JRMigrator.DB
         public List<TableInfo> getInfo(String tablename)
         {
             String sqlstring = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
-            "FROM ALL_TAB_COLUMNS atc " +
-            "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
-                "FROM ALL_CONS_COLUMNS acc " +
-                "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
-                "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
-            "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
+            " FROM ALL_TAB_COLUMNS atc " +
+            " LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
+                " FROM ALL_CONS_COLUMNS acc " +
+                " LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
+                " WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
+            " WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -123,12 +123,12 @@ namespace JRMigrator.DB
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
             String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.table_name, acc.column_name, cca.table_name AS FK_TABLE_NAME, acc.column_name AS FK_COLUMN_NAME" +
-                "FROM ALL_CONSTRAINTS ac" +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
-                "WHERE ac.OWNER = USER" +
-                "AND ac.TABLE_NAME = '"+tablename+"'" +
-                "AND CONSTRAINT_TYPE<> 'P'; ";
+                " FROM ALL_CONSTRAINTS ac" +
+                " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
+                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
+                " WHERE ac.OWNER = USER" +
+                " AND ac.TABLE_NAME = '"+tablename+"'" +
+                " AND CONSTRAINT_TYPE<> 'P' ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -175,8 +175,8 @@ namespace JRMigrator.DB
             List<String> viewStatements = new List<string>();
 
             String sqlstring = "SELECT view_name, text" +
-                "FROM ALL_VIEWS" +
-                "WHERE owner = user; ";
+                " FROM ALL_VIEWS" +
+                " WHERE owner = user; ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();

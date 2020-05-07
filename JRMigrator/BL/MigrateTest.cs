@@ -40,14 +40,15 @@ namespace JRMigrator.BL
                 {
                    
                     infos = os.getInfo(tables[i]);
-                    
+                   constraints = os.getConstraintsFromTable(tables[i]);
                 }
                 else
                 {
                     infos = ms.getInfo(tables[i]);
-                    constraints = ms.getConstraintsFromTable(tables[i]);
-                    
-                    for (int j = 0; j < constraints.Count; j++)
+                   constraints = ms.getConstraintsFromTable(tables[i]);
+                }
+
+                for (int j = 0; j < constraints.Count; j++)
                     {
                         if ((constraints[j].constraintType+"").Equals("ForeignKey"))
                         {
@@ -68,7 +69,8 @@ namespace JRMigrator.BL
                             altertablestatement += stat;  
                         }
                     }
-                }
+
+                pks = "";
 
                 for (int j = 0; j < infos.Count; j++)
                 {
@@ -85,18 +87,18 @@ namespace JRMigrator.BL
                     
                         if (pk)
                         {
-                            pks += name + ",";
-                            cols += name + " " + type + ",";
+                            pks += "["+name + "],";
+                            cols += "["+name + "] " + type + ",";
                         }
                         else
                         {
                             if (!nullable)
                             {
-                                cols += name + " " + type + " not null "+",";
+                                cols += "["+name + "] " + type + " not null "+",";
                             }
                             else
                             {
-                                cols += name + " " + type+",";
+                                cols += "["+name + "] " + type+",";
                             }
                         
                     }
@@ -106,36 +108,51 @@ namespace JRMigrator.BL
 
                 try
                 {
-               
-                    if (pks.Length == 0)
+                    if (!tables[i].Equals("Object")&&!tables[i].Equals("object")&&!tables[i].Equals("OBJECT"))
                     {
-                       insert  += "Create Table " + tables[i] + "( " + cols.Substring(0,cols.Length-1)+ ");\n";
-                       
+                        if (pks.Length == 0)
+                        {
+                            insert = "Create Table [" + tables[i] + "]( " + cols.Substring(0, cols.Length - 1) +
+                                      ");\n";
+
+                        }
+
+                        if (pks.Length > 0)
+                        {
+                            insert = "Create Table [" + tables[i] + "]( " + cols + "Primary key (" +
+                                     pks.Substring(0, pks.Length - 1) + ")" + ");\n";
+                        }
+                        CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                        cmd.ExecuteNonQuery();
                     }
-                    if (pks.Length >0)
-                    {
-                        insert  += "Create Table " + tables[i] + "( " +  cols+"Primary key (" +
-                                  pks.Substring(0, pks.Length - 1) + ")" + ");\n";
-                    }
+                    
+                    
+                   // insert = "";
                     pks = "";
                   cols = "";
                     erfolgreich = "Migration of Tables successfully completed...";
                 }
                 catch (Exception e)
                 {
+                   // MessageBox.Show(insert);
                     erfolgreich = "Migration of tables failed...";
                     Console.Out.WriteLine(e.ToString());
                 }
 
             }
-            CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-            cmd.ExecuteNonQuery();
-            for (int i = 0; i < tables.Count; i++)
+
+            try
             {
-                gettableData(tables[i],ms,os,cs);
+                //  MessageBox.Show(insert);
+                /*CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+                 cmd2.ExecuteNonQuery();*/
             }
-            CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-            cmd2.ExecuteNonQuery();
+            catch (Exception e)
+            {
+                // MessageBox.Show(insert);
+                erfolgreich = "Migration of tables failed...";
+                Console.Out.WriteLine(e.ToString());
+            }
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
