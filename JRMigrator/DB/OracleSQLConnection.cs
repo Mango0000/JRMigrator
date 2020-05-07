@@ -231,5 +231,6 @@ namespace JRMigrator.DB
             }
             return DataType.NULL;
         }
+
     }
 }
