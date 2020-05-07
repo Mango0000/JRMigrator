@@ -170,6 +170,30 @@ namespace JRMigrator.DB
             return listInfo;
         }
 
+        public List<String> getViews()
+        {
+            List<String> viewStatements = new List<string>();
+
+            String sqlstring = "SELECT view_name, text" +
+                "FROM ALL_VIEWS" +
+                "WHERE owner = user; ";
+
+            OracleCommand omd = new OracleCommand(sqlstring, conn);
+            OracleDataReader reader = omd.ExecuteReader();
+
+            while(reader.Read())
+            {
+                String viewName = reader.GetString(0);
+                String viewStatement = reader.GetString(1);
+
+                String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement + ";";
+                viewStatements.Add(statement);
+            }
+            reader.Close();
+
+            return viewStatements;
+        }
+
         private DataType getDType(String data)
         {
             data = data.ToLower();
