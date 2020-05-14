@@ -146,8 +146,14 @@ namespace JRMigrator.DB
                             int index = constraints.FindIndex(ConstraintInfo => ConstraintInfo.constraintName == reader.GetString(0));
                             ConstraintInfo ci = constraints[index];
                             constraints.RemoveAt(index);
-                            ci.columnName = ci.columnName + "," + reader.GetString(3);
-                            ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
+                            if (!ci.columnName.Contains(reader.GetString(3)))
+                            {
+                                ci.columnName = ci.columnName + "," + reader.GetString(3);
+                            }
+                            if (!ci.FKcolumnName.Contains(reader.GetString(5)))
+                            {
+                                ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
+                            }
                             constraints.Add(ci);
                         }
 
