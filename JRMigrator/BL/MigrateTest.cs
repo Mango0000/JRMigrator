@@ -40,35 +40,14 @@ namespace JRMigrator.BL
                 {
                    
                     infos = os.getInfo(tables[i]);
-                   constraints = os.getConstraintsFromTable(tables[i]);
+                    constraints = os.getConstraintsFromTable(tables[i]);  
                 }
                 else
                 {
                     infos = ms.getInfo(tables[i]);
-                   constraints = ms.getConstraintsFromTable(tables[i]);
+                    constraints = ms.getConstraintsFromTable(tables[i]);  
                 }
-
-                for (int j = 0; j < constraints.Count; j++)
-                    {
-                        if ((constraints[j].constraintType+"").Equals("ForeignKey"))
-                        {
-                            
-                            String stat = "Alter table " + tables[i] + " add foreign key(" + constraints[j].columnName +
-                                          ")" +
-                                          " references " + constraints[j].FKtableName+ "("+ constraints[j].FKcolumnName+");\n";
-                            altertablestatement += stat;
-                          
-                        }else if((constraints[j].constraintType+"").Contains("Unique"))
-                        {
-                            String stat = "Alter table " + tables[i] + " add unique(" + constraints[j].columnName + ");"; 
-                            altertablestatement += stat;  
-                        }
-                        else
-                        {
-                            String stat = "Alter table " + tables[i] + " add check( " + constraints[j].columnName +constraints[j].Condition+ ");"; 
-                            altertablestatement += stat;  
-                        }
-                    }
+                
 
                 pks = "";
 
@@ -105,9 +84,9 @@ namespace JRMigrator.BL
 
                     //  MessageBox.Show(cols);
                 }
+              
 
-                try
-                {
+               
                     if (!tables[i].Equals("Object")&&!tables[i].Equals("object")&&!tables[i].Equals("OBJECT"))
                     {
                         if (pks.Length == 0)
@@ -125,34 +104,87 @@ namespace JRMigrator.BL
                         CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                         cmd.ExecuteNonQuery();
                     }
-                    
-                    
-                   // insert = "";
+                  
                     pks = "";
                   cols = "";
-                    erfolgreich = "Migration of Tables successfully completed...";
-                }
-                catch (Exception e)
+               
+
+            }
+
+            for (int i = 0; i < tables.Count; i++)
+            {
+                if (ms == null)
                 {
-                   // MessageBox.Show(insert);
-                    erfolgreich = "Migration of tables failed...";
-                    Console.Out.WriteLine(e.ToString());
+                    constraints = os.getConstraintsFromTable(tables[i]);
+                }
+                else
+                {
+                    constraints = ms.getConstraintsFromTable(tables[i]); 
                 }
 
+                for (int j = 0; j < constraints.Count; j++){
+                    try
+                    {
+                        {
+                            if (!constraints[j].FKtableName.ToLower().Equals("object")&&!tables[i].ToLower().Equals("object"))
+                            {
+                                if ((constraints[j].constraintType + "").Equals("ForeignKey"))
+                                {
+
+
+                                    String stat = "Alter table [" + tables[i] + "] add foreign key(" +
+                                                  constraints[j].columnName +
+                                                  ")" +
+                                                  " references [" + constraints[j].FKtableName + "](" +
+                                                  constraints[j].FKcolumnName + ");\n";
+                                    altertablestatement += stat;
+
+                                }
+                                else if ((constraints[j].constraintType + "").Contains("Unique"))
+                                {
+                                    String stat = "Alter table [" + tables[i] + "] add unique(" +
+                                                  constraints[j].columnName +
+                                                  ");";
+                                    altertablestatement += stat;
+                                }
+                                try
+                                {
+                                    CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+                                    cmd2.ExecuteNonQuery();
+                                    altertablestatement = "";
+                                }
+                                catch (Exception e)
+                                {
+                                    MessageBox.Show(e.Message);
+                                    MessageBox.Show(altertablestatement);
+                                    altertablestatement = "";
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                    /* else
+                     {
+                         String stat = "Alter table " + tables[i] + " add check( " + constraints[j].columnName +
+                                       constraints[j].Condition + ");";
+                         altertablestatement += stat;
+                     }*/
+                    
+                
+                }
             }
 
-            try
-            {
-                //  MessageBox.Show(insert);
-                /*CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-                 cmd2.ExecuteNonQuery();*/
-            }
-            catch (Exception e)
-            {
-                // MessageBox.Show(insert);
-                erfolgreich = "Migration of tables failed...";
-                Console.Out.WriteLine(e.ToString());
-            }
+           
+
+            //  MessageBox.Show(insert);
+             //   MessageBox.Show(altertablestatement);
+             
+              
+            
+           
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
