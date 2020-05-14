@@ -141,7 +141,20 @@ namespace JRMigrator.DB
                     type = reader.GetString(1);
                     if (type.Equals("FOREIGN KEY"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                        try
+                        {
+                            int index = constraints.FindIndex(ConstraintInfo => ConstraintInfo.constraintName == reader.GetString(0));
+                            Console.Out.Write(index);
+                            ConstraintInfo ci = constraints[index];
+                            constraints.RemoveAt(index);
+                            ci.columnName = ci.columnName + "," + reader.GetString(3);
+                            ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
+                            constraints.Add(ci);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                        }
                     }
                     else if (type.Equals("UNIQUE"))
                     {
@@ -154,7 +167,7 @@ namespace JRMigrator.DB
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
                 {
-                    break;
+                    //break;
                 }
             }
             reader.Close();
