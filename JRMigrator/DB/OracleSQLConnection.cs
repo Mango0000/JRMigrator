@@ -151,7 +151,7 @@ try{
             condition = reader.GetString(2);
             if(condition.Contains("IS NOT NULL"))
             {
-                condition = "IS NOT NULL";
+                condition = "NOT NULL";
             }
         }
         catch (Exception e)
