@@ -12,7 +12,7 @@ namespace JRMigrator.BL
     public class MigrateTest
     {
         private List<String> tables;
-        private String erfolgreich;
+        private String erfolgreich="Migration of tables succesfully completed!";
         private List<TableInfo> infos;
         private String pks = "";
         private String insert = "";
@@ -87,8 +87,7 @@ namespace JRMigrator.BL
               
 
                
-                    if (!tables[i].Equals("Object")&&!tables[i].Equals("object")&&!tables[i].Equals("OBJECT"))
-                    {
+                   
                         if (pks.Length == 0)
                         {
                             insert = "Create Table [" + tables[i] + "]( " + cols.Substring(0, cols.Length - 1) +
@@ -101,9 +100,22 @@ namespace JRMigrator.BL
                             insert = "Create Table [" + tables[i] + "]( " + cols + "Primary key (" +
                                      pks.Substring(0, pks.Length - 1) + ")" + ");\n";
                         }
-                        CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                        cmd.ExecuteNonQuery();
-                    }
+
+                        try
+                        {
+                            CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                            cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception e)
+                        {
+                           int index= insert.IndexOf("[");
+                           String substring1 = insert.Substring(index+1);
+                           String substring2 = insert.Substring(0,14);
+                           insert = substring2 + "_" + substring1;
+                           CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                           cmd.ExecuteNonQuery();
+                        }
+                    
                   
                     pks = "";
                   cols = "";
@@ -147,6 +159,13 @@ namespace JRMigrator.BL
                                                   ");";
                                     altertablestatement += stat;
                                 }
+                                else
+                                {
+                                    String stat = "Alter table [" + tables[i] + "] add check(" +
+                                                  constraints[j].columnName +" "+ constraints[j].Condition+
+                                                  ");";
+                                    altertablestatement += stat;   
+                                }
                                 try
                                 {
                                     CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
@@ -155,16 +174,22 @@ namespace JRMigrator.BL
                                 }
                                 catch (Exception e)
                                 {
-                                    MessageBox.Show(e.Message);
-                                    MessageBox.Show(altertablestatement);
-                                    altertablestatement = "";
+                                    if (e.Message.Contains("already defined"))
+                                    {
+                                        altertablestatement = "";  
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(e.Message);
+                                    }
+                                    
                                 }
                             }
                         }
                     }
                     catch (Exception e)
                     {
-
+                        erfolgreich = "Migration of tables failed...";
                     }
                     /* else
                      {
