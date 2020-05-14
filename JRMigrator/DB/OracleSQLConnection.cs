@@ -122,17 +122,16 @@ namespace JRMigrator.DB
         {
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
-            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, cca.table_name AS FK_TABLE_NAME, acc.column_name AS FK_COLUMN_NAME" +
-                "FROM ALL_CONSTRAINTS ac" +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
-                "LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
-                "WHERE ac.OWNER = USER" +
-                "AND ac.TABLE_NAME = '"+tablename+"'" +
-                "AND CONSTRAINT_TYPE<> 'P'; ";
+            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, nvl(cca.table_name,'null') AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
+                " FROM ALL_CONSTRAINTS ac" +
+                " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
+                " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
+                " WHERE ac.OWNER = USER" +
+                " AND ac.TABLE_NAME = '"+tablename+"'" +
+                " AND CONSTRAINT_TYPE<> 'P'";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
-
             String constraint_name;
             String ct_type;
             String condition;
@@ -141,34 +140,53 @@ namespace JRMigrator.DB
             String FKcolumn_name;
 
             DataType datatype;
-
-            while (reader.Read())
-            {
-                constraint_name = reader.GetString(0);
-                ct_type = reader.GetString(1);
-                condition = reader.GetString(2);
-                column_name = reader.GetString(3);
-                FKtable_name = reader.GetString(4);
-                FKcolumn_name = reader.GetString(5);
-
-                if (ct_type.Equals("U"))
-                {
-                    listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name));
-                }
-                else if(ct_type.Equals("R"))
-                {
-                    listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name, FKtable_name, FKcolumn_name));
-                }
-                else if(ct_type.Equals("C"))
-                {
-                    listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name));
-                }
-
-            }
-            reader.Close();
-
-            return listInfo;
+try{
+    while (reader.Read())
+    {
+        constraint_name = reader.GetString(0);
+        ct_type = reader.GetString(1);
+        try
+        {
+            condition = reader.GetString(2);
         }
+        catch (Exception e)
+        {
+            condition = "";
+        }
+
+        column_name = reader.GetString(3);
+        FKtable_name = reader.GetString(4);
+        try
+        {
+            FKcolumn_name = reader.GetString(5);
+        }
+        catch (Exception e)
+        {
+            FKcolumn_name = "";
+        }
+
+        if (ct_type.Equals("U"))
+        {
+            listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name));
+        }
+        else if (ct_type.Equals("R"))
+        {
+            listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
+                FKtable_name, FKcolumn_name));
+        }
+        else if (ct_type.Equals("C"))
+        {
+            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name));
+        }
+    }}catch(Exception e)
+{
+    MessageBox.Show(e+"");
+}
+reader.Close();
+return listInfo;
+}
+            
+        
 
         public List<String> getViews()
         {
