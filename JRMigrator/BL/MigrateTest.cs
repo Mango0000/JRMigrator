@@ -105,6 +105,7 @@ namespace JRMigrator.BL
                         {
                             CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                             cmd.ExecuteNonQuery();
+                            gettableData(tables[i]+"",ms,os,cs);
                         }
                         catch (Exception e)
                         {
@@ -114,6 +115,7 @@ namespace JRMigrator.BL
                            insert = substring2 + "_" + substring1;
                            CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                            cmd.ExecuteNonQuery();
+                           gettableData(tables[i]+"",ms,os,cs);
                         }
                     
                   
@@ -138,8 +140,8 @@ namespace JRMigrator.BL
                     try
                     {
                         {
-                            if (!constraints[j].FKtableName.ToLower().Equals("object")&&!tables[i].ToLower().Equals("object"))
-                            {
+                            
+                            
                                 if ((constraints[j].constraintType + "").Equals("ForeignKey"))
                                 {
 
@@ -161,12 +163,14 @@ namespace JRMigrator.BL
                                 }
                                 else
                                 {
-                                    String stat = "Alter table [" + tables[i] + "] add check(" +
-                                                  constraints[j].columnName +" "+ constraints[j].Condition+
-                                                  ");";
-                                    altertablestatement += stat;   
+                                   /*   String stat = "Alter table [" + tables[i] + "] add constraint "+constraints[j].constraintName+" check (" + constraints[j].Condition+
+                                                    ");";
+                                      altertablestatement += stat;
+                                      MessageBox.Show(altertablestatement);*/
                                 }
-                                try
+                            
+
+                            try
                                 {
                                     CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
                                     cmd2.ExecuteNonQuery();
@@ -180,15 +184,16 @@ namespace JRMigrator.BL
                                     }
                                     else
                                     {
-                                        MessageBox.Show(e.Message);
+                                        gettableData(tables[i],ms,os,cs);
                                     }
                                     
                                 }
-                            }
+                            
                         }
                     }
                     catch (Exception e)
                     {
+                        MessageBox.Show(e+"");
                         erfolgreich = "Migration of tables failed...";
                     }
                     /* else
@@ -213,7 +218,7 @@ namespace JRMigrator.BL
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
-            String data = "";
+          /*  String data = "";
             if (os == null)
             {
                 dt = ms.getDataFromTable(tablename);
@@ -228,7 +233,7 @@ namespace JRMigrator.BL
                 Object[] array = row.ItemArray;
                 for (int i = 0; i <array.Length; i++)
                 {
-                 //   MessageBox.Show(array[i].GetType()+"");
+                    //   MessageBox.Show(array[i].GetType()+"");
                     if ((array[i].GetType() + "").Contains("Date"))
                     {
                         
@@ -268,7 +273,7 @@ namespace JRMigrator.BL
                 data="";
                  
 
-            }
+            }*/
 
            
             //String insert = "Insert into " + tablename + " Values(" + ")";
