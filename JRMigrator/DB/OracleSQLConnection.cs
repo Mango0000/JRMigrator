@@ -140,6 +140,7 @@ namespace JRMigrator.DB
             String FKcolumn_name;
 
             DataType datatype;
+
 try{
     while (reader.Read())
     {
@@ -148,6 +149,10 @@ try{
         try
         {
             condition = reader.GetString(2);
+            if(condition.Contains("IS NOT NULL"))
+            {
+                condition = "IS NOT NULL";
+            }
         }
         catch (Exception e)
         {
