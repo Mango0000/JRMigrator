@@ -151,6 +151,7 @@ namespace JRMigrator.DB
                             ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
                             constraints.Add(ci);
                         }
+
                         catch (ArgumentOutOfRangeException)
                         {
                             constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
