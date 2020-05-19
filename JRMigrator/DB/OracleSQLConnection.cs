@@ -106,16 +106,38 @@ namespace JRMigrator.DB
 
         public DataTable getDataFromTable(String tablename)
         {
-            
-            String sqlstring = "SELECT " +colnames.Substring(0,colnames.Length-1)+
+            String columns = getColNames(tablename);
+            String sqlstring = "SELECT " + columns.Substring(0, columns.Length - 1) +
                                " FROM " + tablename;
-          //  MessageBox.Show(sqlstring);
             DataTable dtable = new DataTable();
             OracleCommand orcCommand = new OracleCommand(sqlstring, conn);
             OracleDataAdapter adapter = new OracleDataAdapter(orcCommand);
             adapter.Fill(dtable);
-            colnames = "";
             return dtable;
+        }
+
+        public String getColNames(String tablename)
+        {
+            String sql = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
+                               "FROM ALL_TAB_COLUMNS atc " +
+                               "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
+                               "FROM ALL_CONS_COLUMNS acc " +
+                               "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
+                               "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
+                               "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
+            OracleCommand omd = new OracleCommand(sql, conn);
+            String columnames = "";
+            String colname = "";
+            OracleDataReader reader = omd.ExecuteReader();
+            while (reader.Read())
+            {
+                colname = reader.GetString(0);
+                columnames += colname + ",";
+               
+
+            }
+           // MessageBox.Show(columnames);
+            return columnames;
         }
 
         public List<ConstraintInfo> getConstraintsFromTable(String tablename)
@@ -157,6 +179,7 @@ try{
         catch (Exception e)
         {
             condition = "";
+           // MessageBox.Show(e.Message);
         }
 
         column_name = reader.GetString(3);
@@ -172,7 +195,7 @@ try{
 
         if (ct_type.Equals("U"))
         {
-            listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name));
+            listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name,"",""));
         }
         else if (ct_type.Equals("R"))
         {
@@ -181,11 +204,11 @@ try{
         }
         else if (ct_type.Equals("C"))
         {
-            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name));
+            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
         }
     }}catch(Exception e)
 {
-    MessageBox.Show(e+"");
+   // MessageBox.Show(e+"");
 }
 reader.Close();
 return listInfo;

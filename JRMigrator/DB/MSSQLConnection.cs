@@ -164,11 +164,11 @@ namespace JRMigrator.DB
                     }
                     else if (type.Equals("UNIQUE"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), "", reader.GetString(3)));
+                        constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), "", reader.GetString(3),"",""));
                     }
                     else if (type.Equals("CHECK"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3)));
+                        constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3),"",""));
                     }
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)

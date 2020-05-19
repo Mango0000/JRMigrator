@@ -40,12 +40,10 @@ namespace JRMigrator.BL
                 {
                    
                     infos = os.getInfo(tables[i]);
-                    constraints = os.getConstraintsFromTable(tables[i]);  
                 }
                 else
                 {
                     infos = ms.getInfo(tables[i]);
-                    constraints = ms.getConstraintsFromTable(tables[i]);  
                 }
                 
 
@@ -109,13 +107,21 @@ namespace JRMigrator.BL
                         }
                         catch (Exception e)
                         {
-                           int index= insert.IndexOf("[");
-                           String substring1 = insert.Substring(index+1);
-                           String substring2 = insert.Substring(0,14);
-                           insert = substring2 + "_" + substring1;
-                           CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                           cmd.ExecuteNonQuery();
-                           gettableData(tables[i]+"",ms,os,cs);
+                            if ((e + "").Contains("OBJECT"))
+                            {
+                                int index = insert.IndexOf("[");
+                                String substring1 = insert.Substring(index + 1);
+                                String substring2 = insert.Substring(0, 14);
+                                insert = substring2 + "_" + substring1;
+                                CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                                cmd.ExecuteNonQuery();
+                            }else
+                            {
+                                MessageBox.Show(e+"");
+                                
+                            }
+
+                            // gettableData(tables[i]+"",ms,os,cs);
                         }
                     
                   
@@ -137,43 +143,43 @@ namespace JRMigrator.BL
                 }
 
                 for (int j = 0; j < constraints.Count; j++){
+                    if (!tables[i].ToLower().Equals("object")&&!constraints[j].FKtableName.ToLower().Equals("object"))
+                    {
+                        if ((constraints[j].constraintType + "").Equals("ForeignKey"))
+                        {
+
+
+                            String stat = "Alter table [" + tables[i] + "] add foreign key(" +
+                                          constraints[j].columnName +
+                                          ")" +
+                                          " references [" + constraints[j].FKtableName + "](" +
+                                          constraints[j].FKcolumnName + ");\n";
+                            altertablestatement += stat;
+
+                        }
+                        else if ((constraints[j].constraintType + "").Contains("Unique"))
+                        {
+                            String stat = "Alter table [" + tables[i] + "] add unique(" +
+                                          constraints[j].columnName +
+                                          ");";
+                            altertablestatement += stat;
+                        }
+                        else
+                        {
+                            String stat = "Alter table [" + tables[i] + "] add constraint " +
+                                          constraints[j].constraintName + " check (" + constraints[j].Condition +
+                                          ");";
+                            altertablestatement += stat;
+                            MessageBox.Show(altertablestatement);
+                        }
+
+                    }
+
                     try
                     {
-                        {
-                            
-                            
-                                if ((constraints[j].constraintType + "").Equals("ForeignKey"))
-                                {
-
-
-                                    String stat = "Alter table [" + tables[i] + "] add foreign key(" +
-                                                  constraints[j].columnName +
-                                                  ")" +
-                                                  " references [" + constraints[j].FKtableName + "](" +
-                                                  constraints[j].FKcolumnName + ");\n";
-                                    altertablestatement += stat;
-
-                                }
-                                else if ((constraints[j].constraintType + "").Contains("Unique"))
-                                {
-                                    String stat = "Alter table [" + tables[i] + "] add unique(" +
-                                                  constraints[j].columnName +
-                                                  ");";
-                                    altertablestatement += stat;
-                                }
-                                else
-                                {
-                                   /*   String stat = "Alter table [" + tables[i] + "] add constraint "+constraints[j].constraintName+" check (" + constraints[j].Condition+
-                                                    ");";
-                                      altertablestatement += stat;
-                                      MessageBox.Show(altertablestatement);*/
-                                }
-                            
-
-                            try
-                                {
+                     //   MessageBox.Show(altertablestatement);
                                     CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-                                    cmd2.ExecuteNonQuery();
+                                  cmd2.ExecuteNonQuery();
                                     altertablestatement = "";
                                 }
                                 catch (Exception e)
@@ -184,25 +190,12 @@ namespace JRMigrator.BL
                                     }
                                     else
                                     {
-                                        gettableData(tables[i],ms,os,cs);
+                                      //  MessageBox.Show(e.Message);
+                                        
                                     }
                                     
                                 }
-                            
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e+"");
-                        erfolgreich = "Migration of tables failed...";
-                    }
-                    /* else
-                     {
-                         String stat = "Alter table " + tables[i] + " add check( " + constraints[j].columnName +
-                                       constraints[j].Condition + ");";
-                         altertablestatement += stat;
-                     }*/
-                    
+                           
                 
                 }
             }
@@ -218,7 +211,7 @@ namespace JRMigrator.BL
         }
         public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
         {
-          /*  String data = "";
+           String data = "";
             if (os == null)
             {
                 dt = ms.getDataFromTable(tablename);
@@ -240,9 +233,16 @@ namespace JRMigrator.BL
                         data += "to_date("+"'" + (array[i]+"").Substring(0,10)+"'"+","+"'dd.mm.yyyy'"+")"+",";
                     }
 
-                   else if ((array[i].GetType() + "").Contains("String"))
+                   else if ((array[i].GetType() + "").Contains("varchar")||(array[i].GetType() + "").Contains("String"))
                     {
-                        data += "'" + array[i]+"'"+",";  
+                        String assist = array[i] + "";
+                        if ((array[i] + "").Contains("'"))
+                        {
+                            
+                           assist= assist.Replace("'", "''");
+                         
+                        }
+                        data += "'" +assist+"'"+",";  
                     }
                     else
                     {
@@ -266,14 +266,16 @@ namespace JRMigrator.BL
                     
                 }
                 data=data.Substring(0, data.Length - 1);
-                String insert = "Insert into " + tablename + " Values(" + data + ")";
+                String insert = "Insert into [" + tablename + "] Values(" + data + ")";
+              
+
                 CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                 cmd.ExecuteNonQuery();
                
                 data="";
                  
 
-            }*/
+            }
 
            
             //String insert = "Insert into " + tablename + " Values(" + ")";
