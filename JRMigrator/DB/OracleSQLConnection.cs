@@ -220,19 +220,21 @@ return listInfo;
         {
             List<String> viewStatements = new List<string>();
 
-            String sqlstring = "SELECT view_name, text" +
-                "FROM ALL_VIEWS" +
-                "WHERE owner = user; ";
+            String sqlstring = "SELECT view_name, text " +
+                "FROM ALL_VIEWS " +
+                "WHERE owner = user ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
 
             while(reader.Read())
             {
+            //    MessageBox.Show(reader.GetDataTypeName(1));
                 String viewName = reader.GetString(0);
-                String viewStatement = reader.GetString(1);
-
-                String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement + ";";
+                String viewStatement = reader[1].ToString();
+                MessageBox.Show(viewStatement);
+                String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement+";" ;
+                MessageBox.Show(statement);
                 viewStatements.Add(statement);
             }
             reader.Close();

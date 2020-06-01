@@ -12,15 +12,16 @@ namespace JRMigrator.BL
     public class MigrateTest
     {
         private List<String> tables;
-        private String erfolgreich="Migration of tables succesfully completed!";
+        private String erfolgreich = "Migration of tables succesfully completed!";
         private List<TableInfo> infos;
         private String pks = "";
         private String insert = "";
-        private DataTable dt=new DataTable();
+        private DataTable dt = new DataTable();
         private LinkedList<DataRow> row;
         private String altertablestatement = "";
         private List<ConstraintInfo> constraints;
-        public void migrateTables(OracleSQLConnection os,MSSQLConnection ms, CUBRIDConnection cs)
+
+        public void migrateTables(OracleSQLConnection os, MSSQLConnection ms, CUBRIDConnection cs)
         {
             String cols = "";
             if (ms == null)
@@ -38,97 +39,92 @@ namespace JRMigrator.BL
                 //MessageBox.Show(cols);
                 if (ms == null)
                 {
-                   
                     infos = os.getInfo(tables[i]);
                 }
                 else
                 {
                     infos = ms.getInfo(tables[i]);
                 }
-                
+
 
                 pks = "";
 
                 for (int j = 0; j < infos.Count; j++)
                 {
-                   // MessageBox.Show(cols);
+                    // MessageBox.Show(cols);
                     String name = infos[j].columnname;
                     String type = infos[j].datatype + "";
                     if (type == DataType.NUMBER + "")
                     {
                         type = "numeric";
                     }
+
                     Boolean nullable = infos[j].nullable;
                     Boolean pk = infos[j].isPrimaryKey;
-                    
-                    
-                        if (pk)
+
+
+                    if (pk)
+                    {
+                        pks += "[" + name + "],";
+                        cols += "[" + name + "] " + type + ",";
+                    }
+                    else
+                    {
+                        if (!nullable)
                         {
-                            pks += "["+name + "],";
-                            cols += "["+name + "] " + type + ",";
+                            cols += "[" + name + "] " + type + " not null " + ",";
                         }
                         else
                         {
-                            if (!nullable)
-                            {
-                                cols += "["+name + "] " + type + " not null "+",";
-                            }
-                            else
-                            {
-                                cols += "["+name + "] " + type+",";
-                            }
-                        
+                            cols += "[" + name + "] " + type + ",";
+                        }
                     }
 
                     //  MessageBox.Show(cols);
                 }
-              
 
-               
-                   
-                        if (pks.Length == 0)
-                        {
-                            insert = "Create Table [" + tables[i] + "]( " + cols.Substring(0, cols.Length - 1) +
-                                      ");\n";
 
-                        }
+                if (pks.Length == 0)
+                {
+                    insert = "Create Table [" + tables[i] + "]( " + cols.Substring(0, cols.Length - 1) +
+                             ");\n";
+                }
 
-                        if (pks.Length > 0)
-                        {
-                            insert = "Create Table [" + tables[i] + "]( " + cols + "Primary key (" +
-                                     pks.Substring(0, pks.Length - 1) + ")" + ");\n";
-                        }
+                if (pks.Length > 0)
+                {
+                    insert = "Create Table [" + tables[i] + "]( " + cols + "Primary key (" +
+                             pks.Substring(0, pks.Length - 1) + ")" + ");\n";
+                }
 
-                        try
-                        {
-                            CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                            cmd.ExecuteNonQuery();
-                            gettableData(tables[i]+"",ms,os,cs);
-                        }
-                        catch (Exception e)
-                        {
-                            if ((e + "").Contains("OBJECT"))
-                            {
-                                int index = insert.IndexOf("[");
-                                String substring1 = insert.Substring(index + 1);
-                                String substring2 = insert.Substring(0, 14);
-                                insert = substring2 + "_" + substring1;
-                                CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                                cmd.ExecuteNonQuery();
-                            }else
-                            {
-                                MessageBox.Show(e+"");
-                                
-                            }
+                try
+                {
+                 //   MessageBox.Show(insert);
+                    CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                 //   cmd.ExecuteNonQuery();
+                    //gettableData(tables[i] + "", ms, os, cs);
+                }
+                catch (Exception e)
+                {
+                    if ((e + "").Contains("OBJECT"))
+                    {
+                        int index = insert.IndexOf("[");
+                        String substring1 = insert.Substring(index + 1);
+                        String substring2 = insert.Substring(0, 14);
+                        insert = substring2 + "_" + substring1;
+                        CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                 //      cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        MessageBox.Show(e + "");
+                    }
 
-                            // gettableData(tables[i]+"",ms,os,cs);
-                        }
-                    
-                  
-                    pks = "";
-                  cols = "";
-               
+                    // gettableData(tables[i]+"",ms,os,cs);
+                }
 
+
+                pks = "";
+                cols = "";
             }
 
             for (int i = 0; i < tables.Count; i++)
@@ -139,23 +135,21 @@ namespace JRMigrator.BL
                 }
                 else
                 {
-                    constraints = ms.getConstraintsFromTable(tables[i]); 
+                    constraints = ms.getConstraintsFromTable(tables[i]);
                 }
 
-                for (int j = 0; j < constraints.Count; j++){
-                    if (!tables[i].ToLower().Equals("object")&&!constraints[j].FKtableName.ToLower().Equals("object"))
+                for (int j = 0; j < constraints.Count; j++)
+                {
+                    if (!tables[i].ToLower().Equals("object") && !constraints[j].FKtableName.ToLower().Equals("object"))
                     {
                         if ((constraints[j].constraintType + "").Equals("ForeignKey"))
                         {
-
-
                             String stat = "Alter table [" + tables[i] + "] add foreign key(" +
                                           constraints[j].columnName +
                                           ")" +
                                           " references [" + constraints[j].FKtableName + "](" +
                                           constraints[j].FKcolumnName + ");\n";
                             altertablestatement += stat;
-
                         }
                         else if ((constraints[j].constraintType + "").Contains("Unique"))
                         {
@@ -166,119 +160,131 @@ namespace JRMigrator.BL
                         }
                         else
                         {
-                            String stat = "Alter table [" + tables[i] + "] add constraint " +
+                       /*     String stat = "Alter table [" + tables[i] + "] add constraint " +
                                           constraints[j].constraintName + " check (" + constraints[j].Condition +
                                           ");";
                             altertablestatement += stat;
-                            MessageBox.Show(altertablestatement);
+                            MessageBox.Show(altertablestatement);*/
                         }
-
                     }
 
                     try
                     {
-                     //   MessageBox.Show(altertablestatement);
-                                    CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-                                  cmd2.ExecuteNonQuery();
-                                    altertablestatement = "";
-                                }
-                                catch (Exception e)
-                                {
-                                    if (e.Message.Contains("already defined"))
-                                    {
-                                        altertablestatement = "";  
-                                    }
-                                    else
-                                    {
-                                      //  MessageBox.Show(e.Message);
-                                        
-                                    }
-                                    
-                                }
-                           
-                
+                        //   MessageBox.Show(altertablestatement);
+                        CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+                      //  cmd2.ExecuteNonQuery();
+                        altertablestatement = "";
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.Message.Contains("already defined"))
+                        {
+                            altertablestatement = "";
+                        }
+                        else
+                        {
+                             // MessageBox.Show(e.Message);
+                        }
+                    }
                 }
             }
 
-           
-
+addViews(ms,os,cs);
             //  MessageBox.Show(insert);
-             //   MessageBox.Show(altertablestatement);
-             
-              
-            
-           
+            //   MessageBox.Show(altertablestatement);
         }
-        public  void gettableData(String tablename,MSSQLConnection ms,OracleSQLConnection os,CUBRIDConnection cs)
+
+        public void gettableData(String tablename, MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
         {
-           String data = "";
+            String data = "";
             if (os == null)
             {
                 dt = ms.getDataFromTable(tablename);
             }
             else
             {
-                dt = os.getDataFromTable(tablename); 
+                dt = os.getDataFromTable(tablename);
             }
 
             foreach (DataRow row in dt.Rows)
             {
                 Object[] array = row.ItemArray;
-                for (int i = 0; i <array.Length; i++)
+                for (int i = 0; i < array.Length; i++)
                 {
                     //   MessageBox.Show(array[i].GetType()+"");
                     if ((array[i].GetType() + "").Contains("Date"))
                     {
-                        
-                        data += "to_date("+"'" + (array[i]+"").Substring(0,10)+"'"+","+"'dd.mm.yyyy'"+")"+",";
+                        data += "to_date(" + "'" + (array[i] + "").Substring(0, 10) + "'" + "," + "'dd.mm.yyyy'" + ")" +
+                                ",";
                     }
 
-                   else if ((array[i].GetType() + "").Contains("varchar")||(array[i].GetType() + "").Contains("String"))
+                    else if ((array[i].GetType() + "").Contains("varchar") ||
+                             (array[i].GetType() + "").Contains("String"))
                     {
                         String assist = array[i] + "";
                         if ((array[i] + "").Contains("'"))
                         {
-                            
-                           assist= assist.Replace("'", "''");
-                         
+                            assist = assist.Replace("'", "''");
                         }
-                        data += "'" +assist+"'"+",";  
+
+                        data += "'" + assist + "'" + ",";
                     }
                     else
                     {
-                        
-                            if ((array[i]+"").Equals(""))
-                            {
-                                data += "null,";
-                            }
-                        
-                        
+                        if ((array[i] + "").Equals(""))
+                        {
+                            data += "null,";
+                        }
+
+
                         else
                         {
                             if ((array[i] + "").Contains(","))
                             {
                                 array[i] = (array[i] + "").Replace(",", ".");
                             }
+
                             data += array[i] + ",";
                         }
                     }
-                  
-                    
                 }
-                data=data.Substring(0, data.Length - 1);
+
+                data = data.Substring(0, data.Length - 1);
                 String insert = "Insert into [" + tablename + "] Values(" + data + ")";
-              
 
                 CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                 cmd.ExecuteNonQuery();
-               
-                data="";
-                 
 
+                data = "";
             }
 
-           
+
             //String insert = "Insert into " + tablename + " Values(" + ")";
+        }
+
+        public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
+        {
+            List<String> views;
+            if (ms == null)
+            {
+                views = os.getViews();
+                for (int i = 0; i < views.Count; i++)
+                {
+                    String sql = views[i];
+                    CUBRIDCommand cmd=new CUBRIDCommand(sql,cs);
+                   // cmd.ExecuteNonQuery();
+                }
+            }
+            else
+            {
+               views= ms.getViews();
+               for (int i = 0; i < views.Count; i++)
+               {
+                   String sql = views[i];
+                   CUBRIDCommand cmd=new CUBRIDCommand(sql,cs);
+                 //  cmd.ExecuteNonQuery();
+               }
+            }
         }
 
 
@@ -287,5 +293,4 @@ namespace JRMigrator.BL
             return erfolgreich;
         }
     }
-
 }

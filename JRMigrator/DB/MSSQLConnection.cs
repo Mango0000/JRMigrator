@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Windows.Forms;
 
 namespace JRMigrator.DB
 {
@@ -102,14 +103,17 @@ namespace JRMigrator.DB
 
         public List<String> getViews()
         {
-            String sqlstring = "SELECT VIEW_DEFINITION" +
-                               "FROM INFORMATION_SCHEMA.VIEWS; ";
+            String sqlstring = "SELECT VIEW_DEFINITION " +
+                               "FROM INFORMATION_SCHEMA.VIEWS ";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             List<String> views = new List<String>();
             while (reader.Read())
             {
-                views.Add(reader.GetString(0));
+                String view = reader.GetString(0).ToLower();
+                view = view.Substring(view.IndexOf(("create")));
+                MessageBox.Show(view);
+                views.Add(view);
             }
             reader.Close();
             return views;
