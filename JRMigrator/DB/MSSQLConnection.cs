@@ -185,6 +185,38 @@ namespace JRMigrator.DB
             
         }
 
+        public List<Sequence> GetSequences()
+        {
+            List <Sequence> sequences = new List<Sequence>();
+            String sqlstring = "SELECT name, current_value, increment, minimum_value, maximum_value, is_cycling, cache_size "+
+                                "FROM sys.SEQUENCES";
+            sqlcommand = new SqlCommand(sqlstring, conn);
+            SqlDataReader reader = sqlcommand.ExecuteReader();
+            String name;
+            Int64 startValue, increment, minimumValue, maximumValue, cacheSize;
+            Boolean cycling;
+            while (reader.Read())
+            {
+                name = reader.GetString(0);
+                startValue = reader.GetInt64(1);
+                increment = reader.GetInt64(2);
+                minimumValue = reader.GetInt64(3);
+                maximumValue = reader.GetInt64(4);
+                cycling = reader.GetBoolean(5);
+                try
+                {
+                    cacheSize = reader.GetInt64(6);
+                    sequences.Add(new Sequence(name, startValue, increment, minimumValue, maximumValue, cycling, cacheSize));
+                }
+                catch (System.Data.SqlTypes.SqlNullValueException)
+                {
+                    sequences.Add(new Sequence(name, startValue, increment, minimumValue, maximumValue, cycling));
+                }
+            }
+            reader.Close();
+            return sequences;
+        }
+
             private DataType getDType(String data)
         {
 
