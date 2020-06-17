@@ -1,5 +1,6 @@
 ﻿using JRMigrator.beans;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -225,16 +226,17 @@ return listInfo;
                 "WHERE owner = user ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
+            omd.InitialLONGFetchSize = -1;
             OracleDataReader reader = omd.ExecuteReader();
 
             while(reader.Read())
             {
             //    MessageBox.Show(reader.GetDataTypeName(1));
                 String viewName = reader.GetString(0);
-                String viewStatement = reader[1].ToString();
-                MessageBox.Show(viewStatement);
+                String viewStatement = reader.GetString(1);
+                //MessageBox.Show(viewStatement);
                 String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement+";" ;
-                MessageBox.Show(statement);
+                //MessageBox.Show(statement);
                 viewStatements.Add(statement);
             }
             reader.Close();
