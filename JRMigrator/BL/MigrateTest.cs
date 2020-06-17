@@ -100,8 +100,8 @@ namespace JRMigrator.BL
                 {
                  //   MessageBox.Show(insert);
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                 //   cmd.ExecuteNonQuery();
-                    //gettableData(tables[i] + "", ms, os, cs);
+                  //  cmd.ExecuteNonQuery();
+                  //  gettableData(tables[i] + "", ms, os, cs);
                 }
                 catch (Exception e)
                 {
@@ -112,7 +112,7 @@ namespace JRMigrator.BL
                         String substring2 = insert.Substring(0, 14);
                         insert = substring2 + "_" + substring1;
                         CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                 //      cmd.ExecuteNonQuery();
+                   //   cmd.ExecuteNonQuery();
                     }
                     else
                     {
@@ -132,10 +132,12 @@ namespace JRMigrator.BL
                 if (ms == null)
                 {
                     constraints = os.getConstraintsFromTable(tables[i]);
+                   
                 }
                 else
                 {
                     constraints = ms.getConstraintsFromTable(tables[i]);
+                   // MessageBox.Show(tables[i] + " - " + constraints.Count);
                 }
 
                 for (int j = 0; j < constraints.Count; j++)
@@ -153,7 +155,7 @@ namespace JRMigrator.BL
                         }
                         else if ((constraints[j].constraintType + "").Contains("Unique"))
                         {
-                            String stat = "Alter table [" + tables[i] + "] add unique(" +
+                           String stat = "Alter table [" + tables[i] + "] add unique(" +
                                           constraints[j].columnName +
                                           ");";
                             altertablestatement += stat;
@@ -168,30 +170,33 @@ namespace JRMigrator.BL
                         }
                     }
 
-                    try
-                    {
-                        //   MessageBox.Show(altertablestatement);
-                        CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-                      //  cmd2.ExecuteNonQuery();
-                        altertablestatement = "";
-                    }
-                    catch (Exception e)
-                    {
-                        if (e.Message.Contains("already defined"))
-                        {
-                            altertablestatement = "";
-                        }
-                        else
-                        {
-                             // MessageBox.Show(e.Message);
-                        }
-                    }
+                   
                 }
             }
 
-addViews(ms,os,cs);
+//addViews(ms,os,cs);
             //  MessageBox.Show(insert);
-            //   MessageBox.Show(altertablestatement);
+             // MessageBox.Show(altertablestatement);
+              try
+              {
+                   // MessageBox.Show(altertablestatement);
+                  CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+                 // cmd2.ExecuteNonQuery();
+               //   addViews(ms,os,cs);
+                        
+              }
+              catch (Exception e)
+              {
+                  if (e.Message.Contains("already defined"))
+                  {
+                      MessageBox.Show(e.Message);
+                      altertablestatement = "";
+                  }
+                  else
+                  {
+                      MessageBox.Show(e.Message);
+                  }
+              }
         }
 
         public void gettableData(String tablename, MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
@@ -250,10 +255,17 @@ addViews(ms,os,cs);
                 }
 
                 data = data.Substring(0, data.Length - 1);
-                String insert = "Insert into [" + tablename + "] Values(" + data + ")";
-
-                CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                cmd.ExecuteNonQuery();
+                String insert = "Insert into [" + tablename + "] Values(" + data + ");";
+                try
+                {
+                    CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
+                 //   cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e+"");
+                    MessageBox.Show(insert);
+                }
 
                 data = "";
             }
@@ -262,31 +274,42 @@ addViews(ms,os,cs);
             //String insert = "Insert into " + tablename + " Values(" + ")";
         }
 
-        public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
+    /*    public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
         {
             List<String> views;
             if (ms == null)
             {
                 views = os.getViews();
-                for (int i = 0; i < views.Count; i++)
-                {
-                    String sql = views[i];
-                    CUBRIDCommand cmd=new CUBRIDCommand(sql,cs);
-                   // cmd.ExecuteNonQuery();
-                }
+               
             }
             else
             {
                views= ms.getViews();
-               for (int i = 0; i < views.Count; i++)
-               {
-                   String sql = views[i];
-                   CUBRIDCommand cmd=new CUBRIDCommand(sql,cs);
-                 //  cmd.ExecuteNonQuery();
-               }
+           
+            }
+            for (int i = 0; i < views.Count; i++)
+            {
+                try
+                {
+                    String sql = views[i];
+                    sql = sql.Replace("dbo.", "");
+                    CUBRIDCommand cmd = new CUBRIDCommand(sql, cs);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    if (e.Message.Contains("already exists"))
+                    {
+                        MessageBox.Show("View konnte nicht erstellt werden.");
+                    }
+                    else
+                    {
+                        MessageBox.Show(e + "");
+                    }
+                }
             }
         }
-
+*/
 
         public String getErfolgreich()
         {
