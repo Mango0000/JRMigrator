@@ -1,5 +1,6 @@
 ﻿using JRMigrator.beans;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -144,15 +145,16 @@ namespace JRMigrator.DB
         {
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
-            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, nvl(cca.table_name,'null') AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
+            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, cca.table_name AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
                 " FROM ALL_CONSTRAINTS ac" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
                 " WHERE ac.OWNER = USER" +
                 " AND ac.TABLE_NAME = '"+tablename+"'" +
-                " AND CONSTRAINT_TYPE= 'R'";
+                " AND CONSTRAINT_TYPE<> 'P'";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
+            omd.InitialLONGFetchSize = -1;
             OracleDataReader reader = omd.ExecuteReader();
             String constraint_name;
             String ct_type;
@@ -171,19 +173,28 @@ try{
         try
         {
             condition = reader.GetString(2);
-            if(condition.Contains("IS NOT NULL"))
+                        //Console.Out.WriteLine(condition);
+           /* if(condition.Contains("IS NOT NULL"))
             {
                 condition = "NOT NULL";
-            }
+            }*/
         }
         catch (Exception e)
         {
             condition = "";
-           // MessageBox.Show(e.Message);
+            //MessageBox.Show(e.Message);
+                       // continue;
         }
 
         column_name = reader.GetString(3);
-        FKtable_name = reader.GetString(4);
+                    try
+                    {
+                        FKtable_name = reader.GetString(4);
+                    }catch (Exception e)
+            {
+                        // MessageBox.Show(e+"");
+                        FKtable_name = "";
+            }
         try
         {
             FKcolumn_name = reader.GetString(5);
@@ -202,7 +213,11 @@ try{
             listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
                 FKtable_name, FKcolumn_name));
         }
-     
+        else if (ct_type.Equals("C"))
+        {
+            
+            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
+        }
     }}catch(Exception e)
 {
    // MessageBox.Show(e+"");
@@ -210,35 +225,8 @@ try{
 reader.Close();
 return listInfo;
 }
-
-        public List<ConstraintInfo> getCheckFromTable(String tablename)
-        {
-            List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
-
-            String sqlstring = " SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name " +
-                               " FROM ALL_CONSTRAINTS ac " +
-                               " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME " +
-                               " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name " +
-                               "  WHERE ac.OWNER = USER " +
-                               " AND ac.TABLE_NAME = '" + tablename + "'" +
-                               " AND CONSTRAINT_TYPE='C'";
-
-                OracleCommand omd = new OracleCommand(sqlstring, conn);
-            OracleDataReader reader = omd.ExecuteReader();
-            String constraint_name;
-            String ct_type;
-            String condition;
-            String column_name;
-            while (reader.Read())
-            {
-                constraint_name = reader.GetString(0);
-                condition = reader.GetString(2);
-                column_name = reader.GetString(3);
-                listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
-            }
-
-            return listInfo;
-        }
+            
+        
 
         public List<String> getViews()
         {
@@ -249,16 +237,17 @@ return listInfo;
                 "WHERE owner = user ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
+            omd.InitialLONGFetchSize = -1;
             OracleDataReader reader = omd.ExecuteReader();
 
             while(reader.Read())
             {
             //    MessageBox.Show(reader.GetDataTypeName(1));
                 String viewName = reader.GetString(0);
-                String viewStatement = reader[1].ToString();
-                MessageBox.Show(viewStatement);
+                String viewStatement = reader.GetString(1);
+                //MessageBox.Show(viewStatement);
                 String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement+";" ;
-                MessageBox.Show(statement);
+                //MessageBox.Show(statement);
                 viewStatements.Add(statement);
             }
             reader.Close();
