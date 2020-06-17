@@ -150,7 +150,7 @@ namespace JRMigrator.DB
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
                 " WHERE ac.OWNER = USER" +
                 " AND ac.TABLE_NAME = '"+tablename+"'" +
-                " AND CONSTRAINT_TYPE<> 'P'";
+                " AND CONSTRAINT_TYPE= 'R'";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -202,10 +202,7 @@ try{
             listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
                 FKtable_name, FKcolumn_name));
         }
-        else if (ct_type.Equals("C"))
-        {
-            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
-        }
+     
     }}catch(Exception e)
 {
    // MessageBox.Show(e+"");
@@ -213,8 +210,35 @@ try{
 reader.Close();
 return listInfo;
 }
-            
-        
+
+        public List<ConstraintInfo> getCheckFromTable(String tablename)
+        {
+            List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
+
+            String sqlstring = " SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name " +
+                               " FROM ALL_CONSTRAINTS ac " +
+                               " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME " +
+                               " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name " +
+                               "  WHERE ac.OWNER = USER " +
+                               " AND ac.TABLE_NAME = '" + tablename + "'" +
+                               " AND CONSTRAINT_TYPE='C'";
+
+                OracleCommand omd = new OracleCommand(sqlstring, conn);
+            OracleDataReader reader = omd.ExecuteReader();
+            String constraint_name;
+            String ct_type;
+            String condition;
+            String column_name;
+            while (reader.Read())
+            {
+                constraint_name = reader.GetString(0);
+                condition = reader.GetString(2);
+                column_name = reader.GetString(3);
+                listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
+            }
+
+            return listInfo;
+        }
 
         public List<String> getViews()
         {
