@@ -32,11 +32,12 @@ namespace JRMigrator.BL
             OracleSQLConnection oracleS = OracleSQLConnection.getConnection();
             oracleS.connectionString = oracleSQL;
             oracleS.OpenConnection();
-            List<String> llist = oracleS.getViews();
-            foreach(String l in llist)
+List<ConstraintInfo> llist = oracleS.getConstraintsFromTable("EMP");
+            foreach(ConstraintInfo l in llist)
             {
-                Console.Out.WriteLine(l);
+                Console.Out.WriteLine(l.constraintName +", "+ l.Condition +", "+ l.constraintType.ToString());
             }
+            
             oracleS.CloseConnection();
         }
 

@@ -145,7 +145,7 @@ namespace JRMigrator.DB
         {
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
-            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, nvl(cca.table_name,'null') AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
+            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, cca.table_name AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
                 " FROM ALL_CONSTRAINTS ac" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
@@ -154,6 +154,7 @@ namespace JRMigrator.DB
                 " AND CONSTRAINT_TYPE<> 'P'";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
+            omd.InitialLONGFetchSize = -1;
             OracleDataReader reader = omd.ExecuteReader();
             String constraint_name;
             String ct_type;
@@ -172,19 +173,28 @@ try{
         try
         {
             condition = reader.GetString(2);
-            if(condition.Contains("IS NOT NULL"))
+                        //Console.Out.WriteLine(condition);
+           /* if(condition.Contains("IS NOT NULL"))
             {
                 condition = "NOT NULL";
-            }
+            }*/
         }
         catch (Exception e)
         {
             condition = "";
-           // MessageBox.Show(e.Message);
+            //MessageBox.Show(e.Message);
+                       // continue;
         }
 
         column_name = reader.GetString(3);
-        FKtable_name = reader.GetString(4);
+                    try
+                    {
+                        FKtable_name = reader.GetString(4);
+                    }catch (Exception e)
+            {
+                        // MessageBox.Show(e+"");
+                        FKtable_name = "";
+            }
         try
         {
             FKcolumn_name = reader.GetString(5);
@@ -205,6 +215,7 @@ try{
         }
         else if (ct_type.Equals("C"))
         {
+            
             listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
         }
     }}catch(Exception e)
