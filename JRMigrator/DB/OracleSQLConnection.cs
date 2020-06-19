@@ -232,7 +232,7 @@ namespace JRMigrator.DB
 
 
 
-        /*public List<String> getViews()
+        public List<String> getViews()
         {
             List<String> viewStatements = new List<string>();
 
@@ -257,7 +257,7 @@ namespace JRMigrator.DB
             reader.Close();
 
             return viewStatements;
-        }*/
+        }
 
 
         public List<String> getSequences()
