@@ -131,11 +131,7 @@ namespace JRMigrator.BL
                 if (ms == null)
                 {
                     constraints = os.getConstraintsFromTable(tables[i]);
-                    foreach (ConstraintInfo co in os.getCheckFromTable(tables[i]))
-                    {
-                        constraints.Add(co);
-                    }
-                   
+
                 }
                 else
                 {
@@ -179,13 +175,14 @@ namespace JRMigrator.BL
 
 //addViews(ms,os,cs);
             //  MessageBox.Show(insert);
-              MessageBox.Show(altertablestatement);
+            //  MessageBox.Show(altertablestatement);
               try
               {
                    // MessageBox.Show(altertablestatement);
                   CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
                  cmd2.ExecuteNonQuery();
                addSeq(ms,os,cs);
+               addViews(ms,os,cs);
                         
               }
               catch (Exception e)
@@ -258,7 +255,15 @@ namespace JRMigrator.BL
                 }
 
                 data = data.Substring(0, data.Length - 1);
-                String insert = "Insert into [" + tablename + "] Values(" + data + ");";
+                String insert = "";
+                if (tablename.Equals("OBJECT"))
+                {
+                     insert = "Insert into [" + "_"+tablename + "] Values(" + data + ");";
+                }
+                else
+                {
+                    insert = "Insert into [" + tablename + "] Values(" + data + ");";
+                }
                 try
                 {
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
@@ -277,7 +282,7 @@ namespace JRMigrator.BL
             //String insert = "Insert into " + tablename + " Values(" + ")";
         }
 
-    /*    public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
+       public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
         {
             List<String> views;
             if (ms == null)
@@ -295,7 +300,13 @@ namespace JRMigrator.BL
                 try
                 {
                     String sql = views[i];
+                    if (sql.Contains("dbo.object "))
+                    {
+                        sql=sql.Replace("dbo.object ", "_object ");
+                    }
                     sql = sql.Replace("dbo.", "");
+                    sql = sql + ";";
+                    MessageBox.Show(sql);
                     CUBRIDCommand cmd = new CUBRIDCommand(sql, cs);
                     cmd.ExecuteNonQuery();
                 }
@@ -312,7 +323,7 @@ namespace JRMigrator.BL
                 }
             }
         }
-*/
+
     public void addSeq(MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
     {
         List<Sequence> seqs;

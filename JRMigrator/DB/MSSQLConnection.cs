@@ -112,7 +112,6 @@ namespace JRMigrator.DB
             {
                 String view = reader.GetString(0).ToLower();
                 view = view.Substring(view.IndexOf(("create")));
-                MessageBox.Show(view);
                 views.Add(view);
             }
             reader.Close();
