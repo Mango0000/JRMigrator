@@ -13,7 +13,7 @@ namespace JRMigrator.DB
         private static MSSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
         private SqlConnection conn = null;
-        private String sqlGetTables = "SELECT TABLE_NAME "+"FROM INFORMATION_SCHEMA.TABLES";
+        private String sqlGetTables = "SELECT TABLE_NAME "+"FROM INFORMATION_SCHEMA.TABLES "+ "WHERE TABLE_TYPE = 'BASE TABLE';";
         SqlCommand sqlcommand;
 
         public static MSSQLConnection getConnection()
@@ -112,6 +112,7 @@ namespace JRMigrator.DB
             {
                 String view = reader.GetString(0).ToLower();
                 view = view.Substring(view.IndexOf(("create")));
+                //MessageBox.Show(view);
                 views.Add(view);
             }
             reader.Close();
@@ -120,7 +121,7 @@ namespace JRMigrator.DB
 
             public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
-            String sqlstring = "SELECT DISTINCT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
+            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
                                 "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc "+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME "+
                                 "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME "+
@@ -136,7 +137,6 @@ namespace JRMigrator.DB
             String condition;
             String type;
             List<ConstraintInfo> constraints = new List<ConstraintInfo>();
-            List<String> constraintscol = new List<String>();
 
             while (reader.Read())
             {
@@ -145,31 +145,25 @@ namespace JRMigrator.DB
                     type = reader.GetString(1);
                     if (type.Equals("FOREIGN KEY"))
                     {
-                        if (!constraintscol.Contains(reader.GetString(3)+reader.GetString(5)+reader.GetString(4)))
+                        try
                         {
-                            constraintscol.Add(reader.GetString(3)+reader.GetString(5)+reader.GetString(4));
-                            try
+                            int index = constraints.FindIndex(ConstraintInfo => ConstraintInfo.constraintName == reader.GetString(0));
+                            ConstraintInfo ci = constraints[index];
+                            constraints.RemoveAt(index);
+                            if (!ci.columnName.Contains(reader.GetString(3)))
                             {
-                                int index = constraints.FindIndex(ConstraintInfo =>
-                                    ConstraintInfo.constraintName == reader.GetString(0));
-                                ConstraintInfo ci = constraints[index];
-                                constraints.RemoveAt(index);
-                                if (!ci.columnName.Contains(reader.GetString(3)))
-                                {
-                                    ci.columnName = ci.columnName + "," + reader.GetString(3);
-                                }
-
-                                if (!ci.FKcolumnName.Contains(reader.GetString(5)))
-                                {
-                                    ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
-                                }
+                                ci.columnName = ci.columnName + "," + reader.GetString(3);
                             }
-
-                            catch (ArgumentOutOfRangeException)
+                            if (!ci.FKcolumnName.Contains(reader.GetString(5)))
                             {
-                                constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "",
-                                    reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                                ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
                             }
+                            constraints.Add(ci);
+                        }
+
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
                         }
                     }
                     else if (type.Equals("UNIQUE"))
@@ -246,18 +240,6 @@ namespace JRMigrator.DB
            
             
           
-        }
-
-        private static void test()
-        {
-            string ip="192.168.0.1";
-            string connectionString;
-            connectionString = "Data Source="+ip+",1433;Initial Catalog=testdatabase;User ID=SA;Password=Manuelh0";
-            SqlConnection cnn;
-            cnn = new SqlConnection(connectionString);
-            cnn.Open();
-            Console.Out.WriteLine("Microsoft SQL Connection");
-            cnn.Close();
         }
         
     }

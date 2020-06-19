@@ -46,11 +46,11 @@ namespace JRMigrator.DB
         {
             String sqlString = "SELECT table_name FROM all_tables WHERE owner = user ";
             var tableList = new List<String>();
-            using(OracleCommand omd = new OracleCommand(sqlString, conn))
+            using (OracleCommand omd = new OracleCommand(sqlString, conn))
             {
-                using(DbDataReader reader = omd.ExecuteReader())
+                using (DbDataReader reader = omd.ExecuteReader())
                 {
-                    while(reader.Read())
+                    while (reader.Read())
                     {
                         Object[] values = new Object[reader.FieldCount];
                         int fieldCount = reader.GetValues(values);
@@ -134,10 +134,10 @@ namespace JRMigrator.DB
             {
                 colname = reader.GetString(0);
                 columnames += colname + ",";
-               
+
 
             }
-           // MessageBox.Show(columnames);
+            // MessageBox.Show(columnames);
             return columnames;
         }
 
@@ -150,7 +150,7 @@ namespace JRMigrator.DB
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
                 " WHERE ac.OWNER = USER" +
-                " AND ac.TABLE_NAME = '"+tablename+"'" +
+                " AND ac.TABLE_NAME = '" + tablename + "'" +
                 " AND CONSTRAINT_TYPE<> 'P'";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
@@ -165,68 +165,72 @@ namespace JRMigrator.DB
 
             DataType datatype;
 
-try{
-    while (reader.Read())
-    {
-        constraint_name = reader.GetString(0);
-        ct_type = reader.GetString(1);
-        try
-        {
-            condition = reader.GetString(2);
-                        //Console.Out.WriteLine(condition);
-           /* if(condition.Contains("IS NOT NULL"))
+            try
             {
-                condition = "NOT NULL";
-            }*/
-        }
-        catch (Exception e)
-        {
-            condition = "";
-            //MessageBox.Show(e.Message);
-                       // continue;
-        }
+                while (reader.Read())
+                {
+                    constraint_name = reader.GetString(0);
+                    ct_type = reader.GetString(1);
+                    try
+                    {
+                        condition = reader.GetString(2);
+                        //Console.Out.WriteLine(condition);
+                        /* if(condition.Contains("IS NOT NULL"))
+                         {
+                             condition = "NOT NULL";
+                         }*/
+                    }
+                    catch (Exception e)
+                    {
+                        condition = "";
+                        //MessageBox.Show(e.Message);
+                        // continue;
+                    }
 
-        column_name = reader.GetString(3);
+                    column_name = reader.GetString(3);
                     try
                     {
                         FKtable_name = reader.GetString(4);
-                    }catch (Exception e)
-            {
+                    }
+                    catch (Exception e)
+                    {
                         // MessageBox.Show(e+"");
                         FKtable_name = "";
+                    }
+                    try
+                    {
+                        FKcolumn_name = reader.GetString(5);
+                    }
+                    catch (Exception e)
+                    {
+                        FKcolumn_name = "";
+                    }
+
+                    if (ct_type.Equals("U"))
+                    {
+                        listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name, "", ""));
+                    }
+                    else if (ct_type.Equals("R"))
+                    {
+                        listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
+                            FKtable_name, FKcolumn_name));
+                    }
+                    else if (ct_type.Equals("C"))
+                    {
+
+                        listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name, "", ""));
+                    }
+                }
             }
-        try
-        {
-            FKcolumn_name = reader.GetString(5);
-        }
-        catch (Exception e)
-        {
-            FKcolumn_name = "";
+            catch (Exception e)
+            {
+                // MessageBox.Show(e+"");
+            }
+            reader.Close();
+            return listInfo;
         }
 
-        if (ct_type.Equals("U"))
-        {
-            listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name,"",""));
-        }
-        else if (ct_type.Equals("R"))
-        {
-            listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
-                FKtable_name, FKcolumn_name));
-        }
-        else if (ct_type.Equals("C"))
-        {
-            
-            listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,"",""));
-        }
-    }}catch(Exception e)
-{
-   // MessageBox.Show(e+"");
-}
-reader.Close();
-return listInfo;
-}
-            
-        
+
 
         public List<String> getViews()
         {
@@ -240,13 +244,13 @@ return listInfo;
             omd.InitialLONGFetchSize = -1;
             OracleDataReader reader = omd.ExecuteReader();
 
-            while(reader.Read())
+            while (reader.Read())
             {
-            //    MessageBox.Show(reader.GetDataTypeName(1));
+                //    MessageBox.Show(reader.GetDataTypeName(1));
                 String viewName = reader.GetString(0);
                 String viewStatement = reader.GetString(1);
                 //MessageBox.Show(viewStatement);
-                String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement+";" ;
+                String statement = "CREATE OR REPLACE VIEW " + viewName + " AS " + viewStatement + ";";
                 //MessageBox.Show(statement);
                 viewStatements.Add(statement);
             }
@@ -254,6 +258,39 @@ return listInfo;
 
             return viewStatements;
         }
+
+
+        public List<String> getSequences()
+        {
+            String sqlstring = "SELECT SEQUENCE_NAME, MIN_VALUE, MAX_VALUE, INCREMENT_BY, LAST_NUMBER" +
+                                "FROM ALL_SEQUENCES" +
+                                "WHERE SEQUENCE_OWNER = USER; ";
+
+            OracleCommand omd = new OracleCommand(sqlstring, conn);
+            OracleDataReader reader = omd.ExecuteReader();
+
+            List<String> sequenceStatements = new List<string>();
+
+            while (reader.Read())
+            {
+                String sequenceName = reader.GetString(0);
+                int minValue = int.Parse(reader.GetString(1));
+                int maxValue = int.Parse(reader.GetString(2));
+                int incrementBy = int.Parse(reader.GetString(3));
+                int lastNumber = int.Parse(reader.GetString(4));
+
+                String createStatement = "CREATE SEQUENCE " + sequenceName +
+                                         " INCREMENT BY " + incrementBy +
+                                         " START WITH " + lastNumber +
+                                         " MINVALUE " + minValue +
+                                         " MAXVALUE "+ maxValue +";";
+
+                sequenceStatements.Add(createStatement);
+            }
+            reader.Close();
+            return sequenceStatements;
+        }
+
 
         private DataType getDType(String data)
         {
