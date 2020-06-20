@@ -110,7 +110,7 @@ namespace JRMigrator.DB
             List<String> views = new List<String>();
             while (reader.Read())
             {
-                String view = reader.GetString(0).ToLower();
+                String view = reader.GetString(0).ToLower().Replace("with schemabinding ","");
                 view = view.Substring(view.IndexOf(("create")));
                 //MessageBox.Show(view);
                 views.Add(view);
