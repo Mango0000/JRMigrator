@@ -137,6 +137,7 @@ namespace JRMigrator.DB
             String condition;
             String type;
             List<ConstraintInfo> constraints = new List<ConstraintInfo>();
+            List<String> constraintscol = new List<String>();
 
             while (reader.Read())
             {
@@ -145,28 +146,37 @@ namespace JRMigrator.DB
                     type = reader.GetString(1);
                     if (type.Equals("FOREIGN KEY"))
                     {
-                        try
-                        {
-                            int index = constraints.FindIndex(ConstraintInfo => ConstraintInfo.constraintName == reader.GetString(0));
-                            ConstraintInfo ci = constraints[index];
-                            constraints.RemoveAt(index);
-                            if (!ci.columnName.Contains(reader.GetString(3)))
+                        if (!constraintscol.Contains(
+                                reader.GetString(3) + reader.GetString(5) + reader.GetString(4)))
                             {
-                                ci.columnName = ci.columnName + "," + reader.GetString(3);
-                            }
-                            if (!ci.FKcolumnName.Contains(reader.GetString(5)))
-                            {
-                                ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
-                            }
-                            constraints.Add(ci);
-                        }
+                                constraintscol.Add(reader.GetString(3) + reader.GetString(5) + reader.GetString(4));
+                                try
+                                {
+                                    int index = constraints.FindIndex(ConstraintInfo =>
+                                        ConstraintInfo.constraintName == reader.GetString(0));
+                                    ConstraintInfo ci = constraints[index];
+                                    constraints.RemoveAt(index);
+                                    if (!ci.columnName.Contains(reader.GetString(3)))
+                                    {
+                                        ci.columnName = ci.columnName + "," + reader.GetString(3);
+                                    }
 
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0), "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                                    if (!ci.FKcolumnName.Contains(reader.GetString(5)))
+                                    {
+                                        ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
+                                    }
+
+                                    constraints.Add(ci);
+                                }
+
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0),
+                                        "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                                }
+                            }
                         }
-                    }
-                    else if (type.Equals("UNIQUE"))
+                        else if (type.Equals("UNIQUE"))
                     {
                         constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), "", reader.GetString(3),"",""));
                     }

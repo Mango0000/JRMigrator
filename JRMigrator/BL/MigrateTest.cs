@@ -305,6 +305,7 @@ namespace JRMigrator.BL
                         sql=sql.Replace("dbo.object ", "_object ");
                     }
                     sql = sql.Replace("dbo.", "");
+                    sql = sql.Replace("WITH SCHEMABINDING ", " ");
                     sql = sql + ";";
                     MessageBox.Show(sql);
                     CUBRIDCommand cmd = new CUBRIDCommand(sql, cs);
