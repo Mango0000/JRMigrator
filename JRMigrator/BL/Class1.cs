@@ -77,8 +77,10 @@ namespace JRMigrator.BL
                 else
                 {
                     MessageBox.Show("An unexpected error occured");
-                    MessageBox.Show(e.ToString());
+                   // MessageBox.Show(e.ToString());
                 }
+
+             close();
             }
 
           
@@ -93,6 +95,13 @@ namespace JRMigrator.BL
         public void migrate()
         {
             mt.migrateTables(os,ms,cs);
+            os = null;
+            ms = null;
+            cs = null;
+        }
+
+        public static void close()
+        {
             os = null;
             ms = null;
             cs = null;

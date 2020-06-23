@@ -23,6 +23,7 @@ namespace JRMigrator.DB
             {
                 theInstance = new OracleSQLConnection();
             }
+
             return theInstance;
         }
 
@@ -34,6 +35,7 @@ namespace JRMigrator.DB
                 conn.Open();
                 return true;
             }
+
             return false;
         }
 
@@ -61,18 +63,19 @@ namespace JRMigrator.DB
                     }
                 }
             }
+
             return tableList;
         }
 
         public List<TableInfo> getInfo(String tablename)
         {
             String sqlstring = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
-            "FROM ALL_TAB_COLUMNS atc " +
-            "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
-                "FROM ALL_CONS_COLUMNS acc " +
-                "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
-                "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
-            "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
+                               "FROM ALL_TAB_COLUMNS atc " +
+                               "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
+                               "FROM ALL_CONS_COLUMNS acc " +
+                               "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
+                               "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
+                               "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -97,10 +100,12 @@ namespace JRMigrator.DB
                 {
                     isPrimaryKey = false;
                 }
+
                 datatype = getDType(data_type);
                 TableInfo ti = new TableInfo(column_name, is_nullable, datatype, isPrimaryKey);
                 tbinf.Add(ti);
             }
+
             reader.Close();
             return tbinf;
         }
@@ -120,12 +125,12 @@ namespace JRMigrator.DB
         public String getColNames(String tablename)
         {
             String sql = "SELECT DISTINCT atc.column_name, atc.data_type, atc.nullable, ar.constraint_type " +
-                               "FROM ALL_TAB_COLUMNS atc " +
-                               "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
-                               "FROM ALL_CONS_COLUMNS acc " +
-                               "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
-                               "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
-                               "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
+                         "FROM ALL_TAB_COLUMNS atc " +
+                         "LEFT OUTER JOIN(SELECT acc.table_name, column_name, ac.constraint_type " +
+                         "FROM ALL_CONS_COLUMNS acc " +
+                         "LEFT OUTER JOIN ALL_CONSTRAINTS ac ON acc.constraint_name = ac.constraint_name " +
+                         "WHERE ac.constraint_type = 'P') ar ON atc.column_name = ar.column_name AND atc.table_name = ar.table_name " +
+                         "WHERE atc.table_name = '" + tablename + "' AND atc.owner = USER";
             OracleCommand omd = new OracleCommand(sql, conn);
             String columnames = "";
             String colname = "";
@@ -134,9 +139,8 @@ namespace JRMigrator.DB
             {
                 colname = reader.GetString(0);
                 columnames += colname + ",";
-
-
             }
+
             // MessageBox.Show(columnames);
             return columnames;
         }
@@ -145,7 +149,8 @@ namespace JRMigrator.DB
         {
             List<ConstraintInfo> listInfo = new List<ConstraintInfo>();
 
-            String sqlstring = "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, cca.table_name AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
+            String sqlstring =
+                "SELECT ac.constraint_name, ac.constraint_type,ac.search_condition, acc.column_name, cca.table_name AS FK_TABLE_NAME, cca.column_name AS FK_COLUMN_NAME" +
                 " FROM ALL_CONSTRAINTS ac" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS acc ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME" +
                 " LEFT OUTER JOIN ALL_CONS_COLUMNS cca ON cca.CONSTRAINT_NAME = ac.r_constraint_name" +
@@ -197,6 +202,7 @@ namespace JRMigrator.DB
                         // MessageBox.Show(e+"");
                         FKtable_name = "";
                     }
+
                     try
                     {
                         FKcolumn_name = reader.GetString(5);
@@ -208,17 +214,19 @@ namespace JRMigrator.DB
 
                     if (ct_type.Equals("U"))
                     {
-                        listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition, column_name, "", ""));
+                        listInfo.Add(new ConstraintInfo(ConstraintType.UniqueKey, constraint_name, condition,
+                            column_name, "", ""));
                     }
                     else if (ct_type.Equals("R"))
                     {
-                        listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition, column_name,
+                        listInfo.Add(new ConstraintInfo(ConstraintType.ForeignKey, constraint_name, condition,
+                            column_name,
                             FKtable_name, FKcolumn_name));
                     }
                     else if (ct_type.Equals("C"))
                     {
-
-                        listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name, "", ""));
+                        listInfo.Add(new ConstraintInfo(ConstraintType.Check, constraint_name, condition, column_name,
+                            "", ""));
                     }
                 }
             }
@@ -226,10 +234,10 @@ namespace JRMigrator.DB
             {
                 // MessageBox.Show(e+"");
             }
+
             reader.Close();
             return listInfo;
         }
-
 
 
         public List<String> getViews()
@@ -237,8 +245,8 @@ namespace JRMigrator.DB
             List<String> viewStatements = new List<string>();
 
             String sqlstring = "SELECT view_name, text " +
-                "FROM ALL_VIEWS " +
-                "WHERE owner = user ";
+                               "FROM ALL_VIEWS " +
+                               "WHERE owner = user ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             omd.InitialLONGFetchSize = -1;
@@ -254,6 +262,7 @@ namespace JRMigrator.DB
                 //MessageBox.Show(statement);
                 viewStatements.Add(statement);
             }
+
             reader.Close();
 
             return viewStatements;
@@ -262,9 +271,9 @@ namespace JRMigrator.DB
 
         public List<String> getSequences()
         {
-            String sqlstring = "SELECT SEQUENCE_NAME, MIN_VALUE, MAX_VALUE, INCREMENT_BY, LAST_NUMBER" +
-                                "FROM ALL_SEQUENCES" +
-                                "WHERE SEQUENCE_OWNER = USER; ";
+            String sqlstring = "SELECT SEQUENCE_NAME, MIN_VALUE, MAX_VALUE, INCREMENT_BY, LAST_NUMBER " +
+                               "FROM ALL_SEQUENCES " +
+                               "WHERE SEQUENCE_OWNER = USER ";
 
             OracleCommand omd = new OracleCommand(sqlstring, conn);
             OracleDataReader reader = omd.ExecuteReader();
@@ -274,19 +283,20 @@ namespace JRMigrator.DB
             while (reader.Read())
             {
                 String sequenceName = reader.GetString(0);
-                int minValue = int.Parse(reader.GetString(1));
-                int maxValue = int.Parse(reader.GetString(2));
-                int incrementBy = int.Parse(reader.GetString(3));
-                int lastNumber = int.Parse(reader.GetString(4));
+                int minValue = int.Parse(reader.GetValue(1) + "");
+                ulong maxValue = ulong.Parse((reader.GetValue(2) + "").Substring(9));
+                int incrementBy = int.Parse(reader.GetValue(3) + "");
+                int lastNumber = int.Parse(reader.GetValue(4) + "");
 
-                String createStatement = "CREATE SEQUENCE " + sequenceName +
-                                         " INCREMENT BY " + incrementBy +
+                String createStatement = "CREATE serial " + sequenceName +
                                          " START WITH " + lastNumber +
+                                         " INCREMENT BY " + incrementBy +
                                          " MINVALUE " + minValue +
-                                         " MAXVALUE "+ maxValue +";";
+                                         " MAXVALUE " + maxValue + ";";
 
                 sequenceStatements.Add(createStatement);
             }
+
             reader.Close();
             return sequenceStatements;
         }
@@ -327,8 +337,8 @@ namespace JRMigrator.DB
             {
                 return DataType.NUMBER;
             }
+
             return DataType.NULL;
         }
-
     }
 }

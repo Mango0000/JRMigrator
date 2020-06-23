@@ -13,7 +13,10 @@ namespace JRMigrator.DB
         private static MSSQLConnection theInstance = null;
         public DBStringBuilder connectionString { get; set; } = null;
         private SqlConnection conn = null;
-        private String sqlGetTables = "SELECT TABLE_NAME "+"FROM INFORMATION_SCHEMA.TABLES "+ "WHERE TABLE_TYPE = 'BASE TABLE';";
+
+        private String sqlGetTables = "SELECT TABLE_NAME " + "FROM INFORMATION_SCHEMA.TABLES " +
+                                      "WHERE TABLE_TYPE = 'BASE TABLE';";
+
         SqlCommand sqlcommand;
 
         public static MSSQLConnection getConnection()
@@ -22,6 +25,7 @@ namespace JRMigrator.DB
             {
                 theInstance = new MSSQLConnection();
             }
+
             return theInstance;
         }
 
@@ -33,6 +37,7 @@ namespace JRMigrator.DB
                 conn.Open();
                 return true;
             }
+
             return false;
         }
 
@@ -50,6 +55,7 @@ namespace JRMigrator.DB
             {
                 tables.Add(reader.GetString(0));
             }
+
             reader.Close();
             return tables;
         }
@@ -59,8 +65,9 @@ namespace JRMigrator.DB
             String sqlstring = "SELECT f.COLUMN_NAME, f.IS_NULLABLE, f.DATA_TYPE, r.CONSTRAINT_TYPE " +
                                "FROM INFORMATION_SCHEMA.COLUMNS f LEFT OUTER JOIN(SELECT c.COLUMN_NAME, c.CONSTRAINT_NAME, t.CONSTRAINT_TYPE " +
                                "FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE c INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON  c.CONSTRAINT_NAME = t.CONSTRAINT_NAME " +
-                               "WHERE c.TABLE_NAME = '"+tablename+"' AND t.CONSTRAINT_TYPE = 'PRIMARY KEY') r ON f.COLUMN_NAME = r.COLUMN_NAME " +
-                               "WHERE f.TABLE_NAME = '"+tablename+"';";
+                               "WHERE c.TABLE_NAME = '" + tablename +
+                               "' AND t.CONSTRAINT_TYPE = 'PRIMARY KEY') r ON f.COLUMN_NAME = r.COLUMN_NAME " +
+                               "WHERE f.TABLE_NAME = '" + tablename + "';";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             List<TableInfo> tbinf = new List<TableInfo>();
@@ -72,20 +79,21 @@ namespace JRMigrator.DB
             while (reader.Read())
             {
                 column_name = reader.GetString(0);
-                is_nullable = reader.GetString(1)=="YES"?true:false;
+                is_nullable = reader.GetString(1) == "YES" ? true : false;
                 data_type = reader.GetString(2);
                 try
                 {
                     is_primary_key = reader.GetString(3).Equals("PRIMARY KEY");
-
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
                 {
                     is_primary_key = false;
                 }
+
                 datatype = getDType(data_type);
                 tbinf.Add(new TableInfo(column_name, is_nullable, datatype, is_primary_key));
             }
+
             reader.Close();
             return tbinf;
         }
@@ -93,7 +101,7 @@ namespace JRMigrator.DB
         public DataTable getDataFromTable(String tablename)
         {
             String sqlstring = "SELECT * " +
-                               "FROM "+tablename;
+                               "FROM " + tablename;
             DataTable dtable = new DataTable();
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataAdapter adapter = new SqlDataAdapter(sqlcommand);
@@ -110,25 +118,27 @@ namespace JRMigrator.DB
             List<String> views = new List<String>();
             while (reader.Read())
             {
-                String view = reader.GetString(0).ToLower().Replace("with schemabinding ","");
+                String view = reader.GetString(0).ToLower().Replace("with schemabinding ", "");
                 view = view.Substring(view.IndexOf(("create")));
                 //MessageBox.Show(view);
                 views.Add(view);
             }
+
             reader.Close();
             return views;
         }
 
-            public List<ConstraintInfo> getConstraintsFromTable(string tablename)
+        public List<ConstraintInfo> getConstraintsFromTable(string tablename)
         {
-            String sqlstring = "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
-                                "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc "+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME "+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME "+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME "+
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME " +
-                                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME "+
-                                "WHERE tc.TABLE_NAME = '"+tablename+"' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
+            String sqlstring =
+                "SELECT tc.CONSTRAINT_NAME, tc.CONSTRAINT_TYPE, cc.CHECK_CLAUSE, ic.COLUMN_NAME, tc2.TABLE_NAME, ccu.COLUMN_NAME " +
+                "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc " +
+                "LEFT OUTER JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME " +
+                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ic ON tc.CONSTRAINT_NAME = ic.CONSTRAINT_NAME " +
+                "LEFT OUTER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc ON tc.CONSTRAINT_NAME = rc.CONSTRAINT_NAME " +
+                "LEFT OUTER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc2 ON rc.UNIQUE_CONSTRAINT_NAME = tc2.CONSTRAINT_NAME " +
+                "LEFT OUTER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu ON tc2.CONSTRAINT_NAME = ccu.CONSTRAINT_NAME " +
+                "WHERE tc.TABLE_NAME = '" + tablename + "' AND tc.CONSTRAINT_TYPE != 'PRIMARY KEY'; ";
 
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
@@ -147,42 +157,44 @@ namespace JRMigrator.DB
                     if (type.Equals("FOREIGN KEY"))
                     {
                         if (!constraintscol.Contains(
-                                reader.GetString(3) + reader.GetString(5) + reader.GetString(4)))
+                            reader.GetString(3) + reader.GetString(5) + reader.GetString(4)))
+                        {
+                            constraintscol.Add(reader.GetString(3) + reader.GetString(5) + reader.GetString(4));
+                            try
                             {
-                                constraintscol.Add(reader.GetString(3) + reader.GetString(5) + reader.GetString(4));
-                                try
+                                int index = constraints.FindIndex(ConstraintInfo =>
+                                    ConstraintInfo.constraintName == reader.GetString(0));
+                                ConstraintInfo ci = constraints[index];
+                                constraints.RemoveAt(index);
+                                if (!ci.columnName.Contains(reader.GetString(3)))
                                 {
-                                    int index = constraints.FindIndex(ConstraintInfo =>
-                                        ConstraintInfo.constraintName == reader.GetString(0));
-                                    ConstraintInfo ci = constraints[index];
-                                    constraints.RemoveAt(index);
-                                    if (!ci.columnName.Contains(reader.GetString(3)))
-                                    {
-                                        ci.columnName = ci.columnName + "," + reader.GetString(3);
-                                    }
-
-                                    if (!ci.FKcolumnName.Contains(reader.GetString(5)))
-                                    {
-                                        ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
-                                    }
-
-                                    constraints.Add(ci);
+                                    ci.columnName = ci.columnName + "," + reader.GetString(3);
                                 }
 
-                                catch (ArgumentOutOfRangeException)
+                                if (!ci.FKcolumnName.Contains(reader.GetString(5)))
                                 {
-                                    constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0),
-                                        "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
+                                    ci.FKcolumnName = ci.FKcolumnName + "," + reader.GetString(5);
                                 }
+
+                                constraints.Add(ci);
+                            }
+
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                constraints.Add(new ConstraintInfo(ConstraintType.ForeignKey, reader.GetString(0),
+                                    "", reader.GetString(3), reader.GetString(4), reader.GetString(5)));
                             }
                         }
-                        else if (type.Equals("UNIQUE"))
+                    }
+                    else if (type.Equals("UNIQUE"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), "", reader.GetString(3),"",""));
+                        constraints.Add(new ConstraintInfo(ConstraintType.UniqueKey, reader.GetString(0), "",
+                            reader.GetString(3), "", ""));
                     }
                     else if (type.Equals("CHECK"))
                     {
-                        constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0), reader.GetString(2), reader.GetString(3),"",""));
+                        constraints.Add(new ConstraintInfo(ConstraintType.Check, reader.GetString(0),
+                            reader.GetString(2), reader.GetString(3), "", ""));
                     }
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
@@ -190,16 +202,17 @@ namespace JRMigrator.DB
                     //break;
                 }
             }
+
             reader.Close();
             return constraints;
-            
         }
 
         public List<Sequence> GetSequences()
         {
-            List <Sequence> sequences = new List<Sequence>();
-            String sqlstring = "SELECT name, current_value, increment, minimum_value, maximum_value, is_cycling, cache_size "+
-                                "FROM sys.SEQUENCES";
+            List<Sequence> sequences = new List<Sequence>();
+            String sqlstring =
+                "SELECT name, current_value, increment, minimum_value, maximum_value, is_cycling, cache_size " +
+                "FROM sys.SEQUENCES";
             sqlcommand = new SqlCommand(sqlstring, conn);
             SqlDataReader reader = sqlcommand.ExecuteReader();
             String name;
@@ -216,41 +229,38 @@ namespace JRMigrator.DB
                 try
                 {
                     cacheSize = reader.GetInt64(6);
-                    sequences.Add(new Sequence(name, startValue, increment, minimumValue, maximumValue, cycling, cacheSize));
+                    sequences.Add(new Sequence(name, startValue, increment, minimumValue, maximumValue, cycling,
+                        cacheSize));
                 }
                 catch (System.Data.SqlTypes.SqlNullValueException)
                 {
                     sequences.Add(new Sequence(name, startValue, increment, minimumValue, maximumValue, cycling));
                 }
             }
+
             reader.Close();
             return sequences;
         }
 
-            private DataType getDType(String data)
+        private DataType getDType(String data)
         {
-
             switch (data)
             {
-               case "varchar": return DataType.VARCHAR;
-               case "varchar2": return DataType.VARCHAR;
-               case "datetime": return DataType.DATETIME;
-               case "date": return DataType.DATE;
-               case "text": return DataType.VARCHAR;
-               case "int": return DataType.INT;
-               case "char": return DataType.CHAR;
-               case "float": return DataType.NUMERIC;
-               case "nvarchar": return DataType.VARCHAR;
-               case "smallint": return DataType.SMALLINT;
-               case "numeric": return DataType.NUMERIC;
-               case "decimal": return DataType.DECIMAL;
-               case "real": return DataType.NUMERIC;
-               default: return DataType.NULL;
+                case "varchar": return DataType.VARCHAR;
+                case "varchar2": return DataType.VARCHAR;
+                case "datetime": return DataType.DATETIME;
+                case "date": return DataType.DATE;
+                case "text": return DataType.VARCHAR;
+                case "int": return DataType.INT;
+                case "char": return DataType.CHAR;
+                case "float": return DataType.NUMERIC;
+                case "nvarchar": return DataType.VARCHAR;
+                case "smallint": return DataType.SMALLINT;
+                case "numeric": return DataType.NUMERIC;
+                case "decimal": return DataType.DECIMAL;
+                case "real": return DataType.NUMERIC;
+                default: return DataType.NULL;
             }
-           
-            
-          
         }
-        
     }
 }

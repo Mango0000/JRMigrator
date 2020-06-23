@@ -398,8 +398,7 @@ namespace JRMigrator
         public void migrate()
         {
             Class1 cs=new Class1();
-
-           cs.migrate();
+            cs.migrate();
            taSummary.Text=cs.getErfolgreich();
            
         }

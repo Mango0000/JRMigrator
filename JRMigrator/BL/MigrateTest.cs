@@ -98,7 +98,7 @@ namespace JRMigrator.BL
 
                 try
                 {
-                 //   MessageBox.Show(insert);
+                    //   MessageBox.Show(insert);
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
                     cmd.ExecuteNonQuery();
                     gettableData(tables[i] + "", ms, os, cs);
@@ -112,13 +112,14 @@ namespace JRMigrator.BL
                         String substring2 = insert.Substring(0, 14);
                         insert = substring2 + "_" + substring1;
                         CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
-                      cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
                     }
                     else
                     {
                         MessageBox.Show(e + "");
                     }
-                    gettableData(tables[i]+"",ms,os,cs);
+
+                    gettableData(tables[i] + "", ms, os, cs);
                 }
 
 
@@ -131,12 +132,11 @@ namespace JRMigrator.BL
                 if (ms == null)
                 {
                     constraints = os.getConstraintsFromTable(tables[i]);
-
                 }
                 else
                 {
                     constraints = ms.getConstraintsFromTable(tables[i]);
-                   // MessageBox.Show(tables[i] + " - " + constraints.Count);
+                    // MessageBox.Show(tables[i] + " - " + constraints.Count);
                 }
 
                 for (int j = 0; j < constraints.Count; j++)
@@ -154,49 +154,52 @@ namespace JRMigrator.BL
                         }
                         else if ((constraints[j].constraintType + "").Contains("Unique"))
                         {
-                           String stat = "Alter table [" + tables[i] + "] add unique(" +
-                                          constraints[j].columnName +
-                                          ");";
-                            altertablestatement += stat;
+                            if (ms == null)
+                            {
+                            }
+                            else
+                            {
+                                String stat = "Alter table [" + tables[i] + "] add unique(" +
+                                              constraints[j].columnName +
+                                              ");";
+                                //    altertablestatement += stat;
+                            }
                         }
                         else
                         {
-                           String stat = "Alter table [" + tables[i] + "] add constraint " +
+                            String stat = "Alter table [" + tables[i] + "] add constraint " +
                                           constraints[j].constraintName + " check (" + constraints[j].Condition +
                                           ");";
                             altertablestatement += stat;
-                           // MessageBox.Show(altertablestatement);
+                            // MessageBox.Show(altertablestatement);
                         }
                     }
-
-                   
                 }
             }
 
 //addViews(ms,os,cs);
             //  MessageBox.Show(insert);
             //  MessageBox.Show(altertablestatement);
-              try
-              {
-                   // MessageBox.Show(altertablestatement);
-                  CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
-                 cmd2.ExecuteNonQuery();
-               addSeq(ms,os,cs);
-               addViews(ms,os,cs);
-                        
-              }
-              catch (Exception e)
-              {
-                  if (e.Message.Contains("already defined"))
-                  {
-                      MessageBox.Show(e.Message);
-                      altertablestatement = "";
-                  }
-                  else
-                  {
-                      MessageBox.Show(e+"");
-                  }
-              }
+            try
+            {
+                // MessageBox.Show(altertablestatement);
+                CUBRIDCommand cmd2 = new CUBRIDCommand(altertablestatement, cs);
+                cmd2.ExecuteNonQuery();
+                addViews(ms, os, cs);
+                addSeq(ms, os, cs);
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("already defined"))
+                {
+                    MessageBox.Show(e.Message);
+                    altertablestatement = "";
+                }
+                else
+                {
+                    MessageBox.Show(e + "");
+                }
+            }
         }
 
         public void gettableData(String tablename, MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
@@ -258,12 +261,13 @@ namespace JRMigrator.BL
                 String insert = "";
                 if (tablename.Equals("OBJECT"))
                 {
-                     insert = "Insert into [" + "_"+tablename + "] Values(" + data + ");";
+                    insert = "Insert into [" + "_" + tablename + "] Values(" + data + ");";
                 }
                 else
                 {
                     insert = "Insert into [" + tablename + "] Values(" + data + ");";
                 }
+
                 try
                 {
                     CUBRIDCommand cmd = new CUBRIDCommand(insert, cs);
@@ -271,7 +275,7 @@ namespace JRMigrator.BL
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e+"");
+                    MessageBox.Show(e + "");
                     MessageBox.Show(insert);
                 }
 
@@ -282,19 +286,18 @@ namespace JRMigrator.BL
             //String insert = "Insert into " + tablename + " Values(" + ")";
         }
 
-       public void addViews( MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
+        public void addViews(MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
         {
             List<String> views;
             if (ms == null)
             {
                 views = os.getViews();
-               
             }
             else
             {
-               views= ms.getViews();
-           
+                views = ms.getViews();
             }
+
             for (int i = 0; i < views.Count; i++)
             {
                 try
@@ -302,12 +305,13 @@ namespace JRMigrator.BL
                     String sql = views[i];
                     if (sql.Contains("dbo.object "))
                     {
-                        sql=sql.Replace("dbo.object ", "_object ");
+                        sql = sql.Replace("dbo.object ", "_object ");
                     }
+
                     sql = sql.Replace("dbo.", "");
                     sql = sql.Replace("WITH SCHEMABINDING ", " ");
                     sql = sql + ";";
-                    MessageBox.Show(sql);
+                    //  MessageBox.Show(sql);
                     CUBRIDCommand cmd = new CUBRIDCommand(sql, cs);
                     cmd.ExecuteNonQuery();
                 }
@@ -325,31 +329,51 @@ namespace JRMigrator.BL
             }
         }
 
-    public void addSeq(MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
-    {
-        List<Sequence> seqs;
-        if (ms == null)
+        public void addSeq(MSSQLConnection ms, OracleSQLConnection os, CUBRIDConnection cs)
         {
-            
-               
-        }
-        else
-        {
-            seqs= ms.GetSequences();
+            List<Sequence> seqs;
+            List<String> seqsc;
 
-            for (int i = 0; i < seqs.Count; i++)
+            if (ms == null)
             {
-                Sequence q = seqs[i];
-
-                String sql = "Create serial " + q.sequenceName + " start with " + q.startNumber + " increment by " +
-                             q.increment + " minvalue "
-                             + q.minValue + " maxvalue " + q.maxValue + " cache " + q.cache;
-                CUBRIDCommand cc=new CUBRIDCommand(sql,cs);
-                cc.ExecuteNonQuery();
+                seqsc = os.getSequences();
+                for (int i = 0; i < seqsc.Count; i++)
+                {
+                    String sql = seqsc[i];
+                    try
+                    {
+                        CUBRIDCommand cc = new CUBRIDCommand(sql, cs);
+                        cc.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e + "");
+                    }
+                }
             }
-           
+            else
+            {
+                seqs = ms.GetSequences();
+
+                for (int i = 0; i < seqs.Count; i++)
+                {
+                    Sequence q = seqs[i];
+
+                    String sql = "Create serial " + q.sequenceName + " start with " + q.startNumber + " increment by " +
+                                 q.increment + " minvalue "
+                                 + q.minValue + " maxvalue " + q.maxValue + " cache " + q.cache;
+                    try
+                    {
+                        CUBRIDCommand cc = new CUBRIDCommand(sql, cs);
+                        cc.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e + "");
+                    }
+                }
+            }
         }
-    }
 
         public String getErfolgreich()
         {
