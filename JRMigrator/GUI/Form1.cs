@@ -11,6 +11,7 @@ namespace JRMigrator
         {
             
             InitializeComponent();
+            cbDB1.Enabled = false;
             test();
         }
 
