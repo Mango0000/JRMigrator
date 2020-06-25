@@ -154,7 +154,7 @@ namespace JRMigrator.BL
                         }
                         else if ((constraints[j].constraintType + "").Contains("Unique"))
                         {
-                            if (ms == null)
+                            if (os != null)
                             {
                             }
                             else
@@ -323,7 +323,7 @@ namespace JRMigrator.BL
                     }
                     else
                     {
-                        MessageBox.Show(e + "");
+                    //    MessageBox.Show(e + "");
                     }
                 }
             }
@@ -347,7 +347,7 @@ namespace JRMigrator.BL
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(e + "");
+                      //  MessageBox.Show(e + "");
                     }
                 }
             }
@@ -369,7 +369,7 @@ namespace JRMigrator.BL
                     }
                     catch (Exception e)
                     {
-                        MessageBox.Show(e + "");
+                     //   MessageBox.Show(e + "");
                     }
                 }
             }
