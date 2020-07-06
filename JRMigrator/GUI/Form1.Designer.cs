@@ -146,17 +146,17 @@ namespace JRMigrator
             this.tbUser1.Name = "tbUser1";
             this.tbUser1.Size = new System.Drawing.Size(115, 23);
             this.tbUser1.TabIndex = 6;
-            this.tbUser1.Text = "dba";
+            this.tbUser1.Text = "";
             this.tbAdr1.Location = new System.Drawing.Point(100, 62);
             this.tbAdr1.Name = "tbAdr1";
             this.tbAdr1.Size = new System.Drawing.Size(115, 23);
             this.tbAdr1.TabIndex = 5;
-            this.tbAdr1.Text = "192.168.1.182";
+            this.tbAdr1.Text = "";
             this.tbPw1.Location = new System.Drawing.Point(100, 165);
             this.tbPw1.Name = "tbPw1";
             this.tbPw1.Size = new System.Drawing.Size(115, 23);
             this.tbPw1.TabIndex = 4;
-            this.tbPw1.Text = "123456";
+            this.tbPw1.Text = "";
             this.lbPw1.Location = new System.Drawing.Point(8, 168);
             this.lbPw1.Name = "lbPw1";
             this.lbPw1.Size = new System.Drawing.Size(124, 28);
@@ -378,7 +378,7 @@ namespace JRMigrator
             //Class1.start();
         }
 
-        public void callDB2()
+            public void callDB2()
         {
             String compare2 = cbDB2.GetItemText(cbDB2.SelectedItem);
             int type = 0;
@@ -393,6 +393,11 @@ namespace JRMigrator
             }
             Class1.start(tbAdr2.Text, tbPort2.Text, tbdatabasename2.Text, tbUser2.Text, tbPw2.Text,type);
 
+        }
+
+        public void closeConnections()
+        {
+            Class1.closeConnection();
         }
 
         public void migrate()

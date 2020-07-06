@@ -64,17 +64,17 @@ namespace JRMigrator
             if (cbDB2.SelectedItem.Equals("OracleSQL"))
             {
                 tbdatabasename2.Text = "";
-                tbAdr2.Text = "db2.htl-kaindorf.at";
+                tbAdr2.Text = "";
                 tbPort2.Text = "1521";
-                tbUser2.Text = "prisad16";
-                tbPw2.Text = "prisad16";
+                tbUser2.Text = "";
+                tbPw2.Text = "";
 
             }else{
                 tbdatabasename2.Text = "";
-                tbAdr2.Text = "84.115.153.150";
+                tbAdr2.Text = "";
                 tbPort2.Text = "1433";
-                tbUser2.Text = "SA";
-                tbPw2.Text = "Migrate01";  
+                tbUser2.Text = "";
+                tbPw2.Text = "";  
         }
         }
         private void bt2_Click(object sender, EventArgs e)
@@ -85,17 +85,9 @@ namespace JRMigrator
 
         private void daten_Click(object sender, EventArgs e)
         {
-            if (DB1tested == 0)
-            {
-                callDB1();
-                
-            }
-
-            if ( DB2tested == 0)
-            {
-                callDB2();
-            }
-
+            closeConnections();
+            callDB1();
+            callDB2();
             migrate();
             
         }

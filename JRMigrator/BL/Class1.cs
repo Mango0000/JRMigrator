@@ -87,6 +87,31 @@ namespace JRMigrator.BL
              
         }
 
+        public static void closeConnection()
+        {
+            try
+            {
+                if (ms != null)
+                {
+                    ms.CloseConnection();
+                    ms = null;
+                }
+                else if (os != null)
+                {
+                    os.CloseConnection();
+                    os = null;
+                }
+                else if (csql != null)
+                {
+                    csql.CloseConnection();
+                    csql = null;
+                }
+            }catch(Exception e)
+            {
+
+            }
+        }
+
         public String getErfolgreich()
         {
            return mt.getErfolgreich();
